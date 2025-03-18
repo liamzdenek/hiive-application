@@ -51,6 +51,7 @@ export class BackendStack extends cdk.Stack {
       handler: 'apiHandler',
       environment: {
         ARTICLES_BUCKET: articlesBucket.bucketName,
+        OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || 'demo-key',
         NODE_ENV: 'production',
       },
       timeout: cdk.Duration.seconds(30),
@@ -60,7 +61,7 @@ export class BackendStack extends cdk.Stack {
         sourceMap: true,
         // Don't exclude aws-sdk as it's needed by the Lambda function
         externalModules: [],
-        nodeModules: ['express', 'serverless-http', 'aws-sdk'],
+        nodeModules: ['express', 'serverless-http', 'aws-sdk', 'axios'],
       },
     });
 
@@ -81,7 +82,7 @@ export class BackendStack extends cdk.Stack {
         sourceMap: true,
         // Don't exclude aws-sdk as it's needed by the Lambda function
         externalModules: [],
-        nodeModules: ['aws-sdk'],
+        nodeModules: ['aws-sdk', 'axios'],
       },
     });
 
@@ -92,6 +93,7 @@ export class BackendStack extends cdk.Stack {
       handler: 'handler',
       environment: {
         ARTICLES_BUCKET: articlesBucket.bucketName,
+        OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || 'demo-key',
         NODE_ENV: 'production',
       },
       timeout: cdk.Duration.minutes(5),
@@ -101,7 +103,7 @@ export class BackendStack extends cdk.Stack {
         sourceMap: true,
         // Don't exclude aws-sdk as it's needed by the Lambda function
         externalModules: [],
-        nodeModules: ['aws-sdk'],
+        nodeModules: ['aws-sdk', 'axios'],
       },
     });
 

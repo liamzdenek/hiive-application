@@ -40,7 +40,7 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
    - Implemented shared types, constants, and utilities
    - Set up Express API endpoints for article submission and sentiment analysis
    - Created Lambda functions for API, article processing, and summary aggregation
-   - Implemented article sentiment analysis using keyword-based approach
+   - Implemented article sentiment analysis using meta-llama/llama-3.1-8b-instruct:free model via OpenRouter
    - Created proper API Gateway to Express integration
    - Fixed TypeScript errors and improved error handling
 
@@ -95,7 +95,7 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
    - Implement financial report analysis agent
    - Develop insight synthesis agent
    - ✅ Create article sentiment analysis agent
-   - Enhance sentiment analysis with OpenRouter integration
+   - ✅ Enhance sentiment analysis with OpenRouter integration using meta-llama/llama-3.1-8b-instruct:free model
 
 5. **Infrastructure Development**
    - Complete S3 bucket configuration for frontend hosting
@@ -166,8 +166,8 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
    - Status: Decided and Implemented
 
 9. **LLM Integration**
-   - Decision: Use OpenRouter instead of OpenAI for LLM access
-   - Rationale: Provides more flexibility and potentially better pricing
+   - Decision: Use OpenRouter with meta-llama/llama-3.1-8b-instruct:free model instead of OpenAI for LLM access
+   - Rationale: Provides more flexibility, potentially better pricing, and access to state-of-the-art open models
    - Status: Decided and Implemented
 
 10. **API Gateway Integration**
@@ -184,8 +184,8 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
 
 2. **AI Performance**
    - Challenge: LLM API calls can be slow and expensive
-   - Approach: Implement caching, consider pre-computing some results
-   - Status: To be addressed during implementation
+   - Approach: Implemented robust error handling, configured Lambda with appropriate timeouts
+   - Status: Implemented with meta-llama/llama-3.1-8b-instruct:free model via OpenRouter
 
 3. **Demo Data**
    - Challenge: Need realistic data for compelling demo
@@ -199,8 +199,8 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
 
 5. **API Key Security**
    - Challenge: Securing API keys in a deployed application
-   - Approach: Use AWS Systems Manager Parameter Store and secure Lambda access
-   - Status: To be implemented
+   - Approach: Use environment variables in Lambda functions for OpenRouter API key
+   - Status: Implemented for OpenRouter API key
 
 6. **AWS Infrastructure**
    - Challenge: Creating a secure, cost-effective infrastructure
@@ -214,8 +214,8 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
 
 8. **S3 Storage Management**
    - Challenge: Efficiently managing article storage and retrieval
-   - Approach: Implement lifecycle policies and organize with clear prefixes
-   - Status: To be implemented
+   - Approach: Implemented lifecycle policies and organized with clear prefixes
+   - Status: Implemented with proper folder structure and lifecycle rules
 
 ### Key Risks
 

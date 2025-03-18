@@ -6,6 +6,7 @@ import {
   formatSummaryKey,
   S3_FOLDERS
 } from '@hiive/shared';
+import { analyzeSentiment as analyzeWithOpenRouter } from '../agents/openRouterAgent';
 
 // Initialize AWS SDK
 const s3 = new S3();
@@ -25,94 +26,25 @@ const BUCKET_NAME = ARTICLES_BUCKET as string;
  * @returns The sentiment analysis result
  */
 async function analyzeSentiment(article: ArticleData): Promise<ArticleAnalysis['analysis']> {
-  // In a real implementation, this would use LangChain.js and OpenRouter API
-  // For now, we'll simulate the analysis with mock data
-  
   console.log(`Analyzing sentiment for article: ${article.title}`);
   
-  // Simulate processing time
+  // Measure processing time
   const startTime = Date.now();
   
-  // For demo purposes, generate random sentiment based on keywords in the content
-  let sentimentScore = 0.5; // Neutral by default
-  
-  // Simple keyword-based sentiment analysis for demo
-  const positiveKeywords = ['growth', 'profit', 'success', 'innovation', 'launch', 'positive', 'increase'];
-  const negativeKeywords = ['decline', 'loss', 'failure', 'risk', 'concern', 'negative', 'decrease'];
-  
-  // Count positive and negative keywords
-  let positiveCount = 0;
-  let negativeCount = 0;
-  
-  positiveKeywords.forEach(keyword => {
-    const regex = new RegExp(keyword, 'gi');
-    const matches = article.content.match(regex);
-    if (matches) {
-      positiveCount += matches.length;
-    }
-  });
-  
-  negativeKeywords.forEach(keyword => {
-    const regex = new RegExp(keyword, 'gi');
-    const matches = article.content.match(regex);
-    if (matches) {
-      negativeCount += matches.length;
-    }
-  });
-  
-  // Calculate sentiment score (-1 to 1)
-  const totalKeywords = positiveCount + negativeCount;
-  if (totalKeywords > 0) {
-    sentimentScore = (positiveCount - negativeCount) / totalKeywords;
-    // Normalize to range between -1 and 1
-    sentimentScore = Math.max(-1, Math.min(1, sentimentScore));
-    // Shift to range between 0 and 1 for the API contract
-    sentimentScore = (sentimentScore + 1) / 2;
+  try {
+    // Use OpenRouter LLM for sentiment analysis
+    const analysis = await analyzeWithOpenRouter(article.title, article.content);
+    
+    // Calculate processing time
+    const processingTime = (Date.now() - startTime) / 1000;
+    console.log(`Sentiment analysis completed in ${processingTime}s using OpenRouter`);
+    
+    return analysis;
+  } catch (error) {
+    console.error('Error in sentiment analysis:', error);
+    // Rethrow the error to fail the Lambda execution
+    throw new Error(`Failed to analyze sentiment with OpenRouter: ${error instanceof Error ? error.message : String(error)}`);
   }
-  
-  // Extract topics from content
-  const topics = [
-    {
-      name: 'financial performance',
-      sentiment: Math.random() * 0.4 + 0.4, // Random between 0.4 and 0.8
-      relevance: Math.random() * 0.3 + 0.7  // Random between 0.7 and 1.0
-    },
-    {
-      name: 'market competition',
-      sentiment: Math.random() * 0.4 + 0.3, // Random between 0.3 and 0.7
-      relevance: Math.random() * 0.3 + 0.6  // Random between 0.6 and 0.9
-    },
-    {
-      name: 'product innovation',
-      sentiment: Math.random() * 0.4 + 0.5, // Random between 0.5 and 0.9
-      relevance: Math.random() * 0.3 + 0.5  // Random between 0.5 and 0.8
-    }
-  ];
-  
-  // Generate key insights
-  const insights = [
-    `Company reported ${positiveCount > negativeCount ? 'positive' : 'mixed'} results in recent quarter`,
-    `New product line showing ${Math.random() > 0.5 ? 'strong' : 'moderate'} initial adoption`,
-    `Expansion into new markets ${Math.random() > 0.7 ? 'ahead of' : 'on'} schedule`
-  ];
-  
-  // Generate risk factors
-  const risks = [
-    `Increasing competition in ${Math.random() > 0.5 ? 'Asian' : 'European'} markets`,
-    `Supply chain constraints mentioned as potential issue`,
-    `Regulatory changes could impact ${Math.random() > 0.5 ? 'revenue' : 'operations'}`
-  ];
-  
-  // Calculate processing time
-  const processingTime = (Date.now() - startTime) / 1000;
-  
-  return {
-    overallSentiment: sentimentScore,
-    confidence: 0.75 + (Math.random() * 0.2), // Random between 0.75 and 0.95
-    topics,
-    keyInsights: insights,
-    riskFactors: risks
-  };
 }
 
 /**
@@ -275,7 +207,7 @@ export const handler = async (event: any): Promise<void> => {
         analysis: analysisResult,
         metadata: {
           processingTime: processingTimeMs / 1000, // Convert to seconds
-          modelVersion: 'openrouter-anthropic-claude-3-opus',
+          modelVersion: 'meta-llama/llama-3.1-8b-instruct:free',
           processedAt: new Date().toISOString()
         },
         originalArticle: {

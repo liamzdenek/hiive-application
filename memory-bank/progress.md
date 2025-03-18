@@ -92,7 +92,7 @@ The following components have been implemented:
 - [ ] Financial report analysis agent
 - [ ] Insight synthesis agent
 - [x] Article sentiment analysis agent
-- [x] OpenRouter integration for LLM access
+- [x] OpenRouter integration for LLM access with meta-llama/llama-3.1-8b-instruct:free model
 
 ### AWS Infrastructure (CDK)
 - [x] Complete backend stack structure
@@ -130,9 +130,10 @@ The backend infrastructure has been successfully implemented and deployed to AWS
 
 1. Frontend build requires proper Vite configuration
 2. API Gateway to Express integration needs to be tested with more complex scenarios
-3. Sentiment analysis is currently using a simple keyword-based approach, which could be enhanced
-4. Need to implement proper error handling for edge cases in the Lambda functions
+3. ~~Sentiment analysis is currently using a simple keyword-based approach, which could be enhanced~~ (Resolved: Now using meta-llama/llama-3.1-8b-instruct:free through OpenRouter)
+4. ~~Need to implement proper error handling for edge cases in the Lambda functions~~ (Resolved: Implemented robust error handling in Lambda functions)
 5. Fixed Lambda bundling configuration to include aws-sdk as a nodeModule instead of an externalModule
+6. OpenRouter API key must be provided as an environment variable during deployment
 
 ## Development Timeline
 
@@ -177,6 +178,9 @@ The backend infrastructure has been successfully implemented and deployed to AWS
 - The API Gateway is properly integrated with the Express app
 - The deployment is configured to use the 'lz-demos' AWS profile
 - Testing scripts have been created to verify the functionality
+- Implemented OpenRouter integration with meta-llama/llama-3.1-8b-instruct:free model for sentiment analysis
+- The article processor now uses LLM for analysis with no fallback to ensure high-quality results
+- The summary aggregator has been enhanced to better handle the LLM-generated analysis
 - Focus now shifts to implementing the frontend components
 - Prioritize visual appeal and user experience to make a strong impression
 - Ensure the demo clearly communicates how this could add value to Hiive's platform

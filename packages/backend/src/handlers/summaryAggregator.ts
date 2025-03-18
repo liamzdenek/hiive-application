@@ -1,11 +1,16 @@
 import { S3 } from 'aws-sdk';
-import { 
-  ArticleAnalysis, 
+import {
+  ArticleAnalysis,
   SentimentSummary,
   formatSummaryKey,
   S3_BUCKETS,
   S3_FOLDERS
 } from '@hiive/shared';
+
+// Constants for summary aggregation
+const MAX_INSIGHTS = 5;
+const MAX_TOPICS = 5;
+const RECENT_ANALYSIS_HOURS = 1; // Look back 1 hour for recent analyses
 
 // Initialize AWS SDK
 const s3 = new S3();
@@ -170,6 +175,7 @@ async function updateCompanySummary(companyId: string, analyses: ArticleAnalysis
     let totalConfidence = 0;
     const topicMap = new Map<string, { sentiment: number, count: number, relevance: number }>();
     const insights: string[] = [];
+    const riskFactors: string[] = [];
     const sourceCounts: Record<string, number> = {};
     
     for (const analysis of analyses) {
@@ -177,15 +183,25 @@ async function updateCompanySummary(companyId: string, analyses: ArticleAnalysis
       totalSentiment += analysis.analysis.overallSentiment;
       totalConfidence += analysis.analysis.confidence;
       
-      // Add to topic sentiments
+      // Add to topic sentiments - normalize topic names to lowercase for better aggregation
       for (const topic of analysis.analysis.topics) {
-        const existing = topicMap.get(topic.name);
+        // Normalize topic name to lowercase and trim whitespace
+        const normalizedName = topic.name.toLowerCase().trim();
+        
+        // Skip empty topics
+        if (!normalizedName) continue;
+        
+        const existing = topicMap.get(normalizedName);
         if (existing) {
-          existing.sentiment = (existing.sentiment * existing.count + topic.sentiment) / (existing.count + 1);
-          existing.relevance = (existing.relevance * existing.count + topic.relevance) / (existing.count + 1);
+          // Weight by relevance when aggregating
+          const totalRelevance = existing.relevance * existing.count + topic.relevance;
+          const newCount = existing.count + 1;
+          
+          existing.sentiment = (existing.sentiment * existing.count + topic.sentiment) / newCount;
+          existing.relevance = totalRelevance / newCount;
           existing.count += 1;
         } else {
-          topicMap.set(topic.name, {
+          topicMap.set(normalizedName, {
             sentiment: topic.sentiment,
             relevance: topic.relevance,
             count: 1
@@ -193,12 +209,22 @@ async function updateCompanySummary(companyId: string, analyses: ArticleAnalysis
         }
       }
       
-      // Add to insights
-      insights.push(...analysis.analysis.keyInsights);
+      // Add to insights and risk factors
+      if (analysis.analysis.keyInsights && Array.isArray(analysis.analysis.keyInsights)) {
+        insights.push(...analysis.analysis.keyInsights);
+      }
       
-      // Add to source counts
-      const source = analysis.originalArticle.reference.split('/')[0] || 'unknown';
-      sourceCounts[source] = (sourceCounts[source] || 0) + 1;
+      if (analysis.analysis.riskFactors && Array.isArray(analysis.analysis.riskFactors)) {
+        riskFactors.push(...analysis.analysis.riskFactors);
+      }
+      
+      // Add to source counts - extract source from reference path
+      const pathParts = analysis.originalArticle.reference.split('/');
+      // The source should be the first part after the folder name
+      const source = pathParts.length > 1 ? pathParts[1] : 'unknown';
+      // Ensure source is a string
+      const sourceKey = source || 'unknown';
+      sourceCounts[sourceKey] = (sourceCounts[sourceKey] || 0) + 1;
       
       // Update time distribution
       const processedAt = new Date(analysis.metadata.processedAt);
@@ -227,13 +253,21 @@ async function updateCompanySummary(companyId: string, analyses: ArticleAnalysis
       trend: 0 // We would need historical data to calculate this properly
     }));
     
-    // Sort by relevance and take top 5
+    // Sort by volume (popularity) and take top MAX_TOPICS
     summary.topicSentiments.sort((a, b) => b.volume - a.volume);
-    summary.topicSentiments = summary.topicSentiments.slice(0, 5);
+    summary.topicSentiments = summary.topicSentiments.slice(0, MAX_TOPICS);
     
-    // Update recent insights (deduplicate and take top 5)
-    const uniqueInsights = [...new Set(insights)];
-    summary.recentInsights = uniqueInsights.slice(0, 5);
+    // Update recent insights (deduplicate and take top MAX_INSIGHTS)
+    // Filter out empty insights and trim whitespace
+    const filteredInsights = insights
+      .filter(insight => insight && insight.trim().length > 0)
+      .map(insight => insight.trim());
+    
+    // Deduplicate insights
+    const uniqueInsights = [...new Set(filteredInsights)];
+    
+    // Take top MAX_INSIGHTS
+    summary.recentInsights = uniqueInsights.slice(0, MAX_INSIGHTS);
     
     // Update sources
     for (const [source, count] of Object.entries(sourceCounts)) {
@@ -276,8 +310,8 @@ export const handler = async (): Promise<void> => {
     
     console.log(`Found ${companyIds.length} companies to process`);
     
-    // Calculate cutoff time (1 hour ago)
-    const cutoffTime = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    // Calculate cutoff time based on RECENT_ANALYSIS_HOURS
+    const cutoffTime = new Date(Date.now() - RECENT_ANALYSIS_HOURS * 60 * 60 * 1000).toISOString();
     
     // Process each company
     for (const companyId of companyIds) {

@@ -18,7 +18,8 @@
     "aws-sdk": "^2.1531.0",
     "@hiive/shared": "*",
     "serverless-http": "^3.2.0",
-    "aws-lambda": "^1.0.7"
+    "aws-lambda": "^1.0.7",
+    "axios": "^1.6.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.131",

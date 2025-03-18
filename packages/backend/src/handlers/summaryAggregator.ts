@@ -3,7 +3,6 @@ import {
   ArticleAnalysis,
   SentimentSummary,
   formatSummaryKey,
-  S3_BUCKETS,
   S3_FOLDERS
 } from '@hiive/shared';
 
@@ -11,6 +10,12 @@ import {
 const MAX_INSIGHTS = 5;
 const MAX_TOPICS = 5;
 const RECENT_ANALYSIS_HOURS = 1; // Look back 1 hour for recent analyses
+
+// Get the S3 bucket name from environment variables
+const ARTICLES_BUCKET = process.env.ARTICLES_BUCKET as string;
+if (!ARTICLES_BUCKET) {
+  throw new Error('ARTICLES_BUCKET environment variable is required');
+}
 
 // Initialize AWS SDK
 const s3 = new S3();
@@ -25,7 +30,7 @@ async function getRecentAnalyses(companyId: string, since: string): Promise<Arti
   try {
     // List all analysis files for the company
     const listResponse = await s3.listObjectsV2({
-      Bucket: S3_BUCKETS.ARTICLES,
+      Bucket: ARTICLES_BUCKET,
       Prefix: `${S3_FOLDERS.ANALYSIS}/${companyId}/`
     }).promise();
     
@@ -49,7 +54,7 @@ async function getRecentAnalyses(companyId: string, since: string): Promise<Arti
     for (const key of recentKeys) {
       try {
         const response = await s3.getObject({
-          Bucket: S3_BUCKETS.ARTICLES,
+          Bucket: ARTICLES_BUCKET,
           Key: key
         }).promise();
         
@@ -77,7 +82,7 @@ async function getAllCompanyIds(): Promise<string[]> {
   try {
     // List all folders under the analysis prefix
     const listResponse = await s3.listObjectsV2({
-      Bucket: S3_BUCKETS.ARTICLES,
+      Bucket: ARTICLES_BUCKET,
       Prefix: `${S3_FOLDERS.ANALYSIS}/`,
       Delimiter: '/'
     }).promise();
@@ -120,7 +125,7 @@ async function updateCompanySummary(companyId: string, analyses: ArticleAnalysis
     
     try {
       const existingSummaryResponse = await s3.getObject({
-        Bucket: S3_BUCKETS.ARTICLES,
+        Bucket: ARTICLES_BUCKET,
         Key: summaryKey
       }).promise();
       
@@ -279,7 +284,7 @@ async function updateCompanySummary(companyId: string, analyses: ArticleAnalysis
     
     // Save the updated summary
     await s3.putObject({
-      Bucket: S3_BUCKETS.ARTICLES,
+      Bucket: ARTICLES_BUCKET,
       Key: summaryKey,
       Body: JSON.stringify(summary, null, 2),
       ContentType: 'application/json'

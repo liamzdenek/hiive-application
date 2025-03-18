@@ -26,10 +26,13 @@
 - Leverage AWS Lambda for serverless backend functionality
 - Implement AI agents using LangChain.js
 - Follow a component-based architecture
-- Use Tailwind CSS for styling to ensure rapid development
+- Use CSS modules for styling instead of Tailwind CSS
 - Implement caching for expensive AI operations
 - Use AWS CDK for infrastructure definition and deployment
 - Follow AWS best practices for security and cost optimization
+- Use Nx monorepo for managing the project structure
+- Use nx:run-commands executor for build, test, and lint targets
+- Use {workspaceRoot} variable in project.json files for output paths
 
 ## Known Challenges
 - Time constraint of 1-2 days requires careful scope management
@@ -55,6 +58,10 @@
 - Configure AWS CDK for infrastructure as code
 - Use AWS CLI for interacting with AWS services
 - Implement AWS best practices for security and cost management
+- Use Nx CLI for managing the monorepo
+- Use nx run-many for building, testing, and linting all packages
+- Use nx run for targeting specific packages
+- Use nx graph to visualize the dependency graph
 
 ## Candidate Background Relevance
 - Liam has experience reducing Time-to-Value from weeks to 15 minutes, which aligns with creating an efficient demo

@@ -3,8 +3,9 @@
 import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
-import { S3 } from 'aws-sdk';
-import { generateId, formatArticleKey } from '@hiive/shared';
+// Import these when needed
+// import { S3 } from 'aws-sdk';
+// import { generateId, formatArticleKey } from '@hiive/shared';
 
 const program = new Command();
 

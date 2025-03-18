@@ -5,19 +5,18 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/backend"],
       "options": {
-        "outputPath": "dist/packages/backend",
-        "main": "packages/backend/src/index.ts",
-        "tsConfig": "packages/backend/tsconfig.json",
-        "assets": ["packages/backend/*.md"]
+        "command": "tsc -p tsconfig.json",
+        "cwd": "packages/backend"
       }
     },
     "serve": {
-      "executor": "@nx/js:node",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "backend:build"
+        "command": "node dist/packages/backend/index.js",
+        "cwd": "."
       }
     },
     "dev": {
@@ -28,17 +27,19 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "nx:run-commands",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/backend/**/*.ts"]
+        "command": "eslint \"**/*.ts\"",
+        "cwd": "packages/backend"
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/packages/backend"],
       "options": {
-        "jestConfig": "packages/backend/jest.config.ts",
+        "command": "jest",
+        "cwd": "packages/backend",
         "passWithNoTests": true
       },
       "configurations": {

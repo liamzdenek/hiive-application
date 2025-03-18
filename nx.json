@@ -1,0 +1,52 @@
+{
+  "installation": {
+    "version": "20.6.1"
+  },
+  "extends": "nx/presets/npm.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": true
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/jest.preset.js"
+      ],
+      "cache": true
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
+      ],
+      "cache": true
+    },
+    "e2e": {
+      "cache": true
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "packages",
+    "libsDir": "packages"
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [],
+    "production": [
+      "default"
+    ]
+  },
+  "generators": {
+    "@nx/js:library": {
+      "buildable": true
+    }
+  },
+  "defaultBase": "main"
+}

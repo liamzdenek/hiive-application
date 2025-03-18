@@ -5,27 +5,27 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/cdk"],
       "options": {
-        "outputPath": "dist/packages/cdk",
-        "main": "packages/cdk/bin/app.ts",
-        "tsConfig": "packages/cdk/tsconfig.json",
-        "assets": ["packages/cdk/*.md"]
+        "command": "tsc -p tsconfig.json",
+        "cwd": "packages/cdk"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "nx:run-commands",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/cdk/**/*.ts"]
+        "command": "eslint \"**/*.ts\"",
+        "cwd": "packages/cdk"
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/packages/cdk"],
       "options": {
-        "jestConfig": "packages/cdk/jest.config.ts",
+        "command": "jest",
+        "cwd": "packages/cdk",
         "passWithNoTests": true
       },
       "configurations": {

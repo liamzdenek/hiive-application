@@ -8,7 +8,7 @@ const port = process.env.PORT || 3001;
 app.use(express.json());
 
 // Routes
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_, res) => {
   res.json(createSuccessResponse({ status: 'ok' }));
 });
 

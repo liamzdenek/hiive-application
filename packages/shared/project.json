@@ -5,27 +5,27 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/shared"],
       "options": {
-        "outputPath": "dist/packages/shared",
-        "main": "packages/shared/src/index.ts",
-        "tsConfig": "packages/shared/tsconfig.json",
-        "assets": ["packages/shared/*.md"]
+        "command": "tsc -p tsconfig.json",
+        "cwd": "packages/shared"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "nx:run-commands",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/shared/**/*.ts"]
+        "command": "eslint \"**/*.ts\"",
+        "cwd": "packages/shared"
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/packages/shared"],
       "options": {
-        "jestConfig": "packages/shared/jest.config.ts",
+        "command": "jest",
+        "cwd": "packages/shared",
         "passWithNoTests": true
       },
       "configurations": {

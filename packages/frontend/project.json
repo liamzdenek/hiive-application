@@ -5,79 +5,82 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/frontend"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/packages/frontend"
+        "command": "vite build",
+        "cwd": "packages/frontend"
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "command": "vite build --mode development"
         },
         "production": {
-          "mode": "production"
+          "command": "vite build --mode production"
         }
       }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build"
+        "command": "vite",
+        "cwd": "packages/frontend"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development",
-          "hmr": true
+          "command": "vite --mode development"
         },
         "production": {
-          "buildTarget": "frontend:build:production",
-          "hmr": false
+          "command": "vite --mode production"
         }
       }
     },
     "dev": {
-      "executor": "@nx/vite:dev-server",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build"
+        "command": "vite",
+        "cwd": "packages/frontend"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development",
-          "hmr": true
+          "command": "vite --mode development"
         }
       }
     },
     "preview": {
-      "executor": "@nx/vite:preview-server",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build"
+        "command": "vite preview",
+        "cwd": "packages/frontend"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development"
+          "command": "vite preview --mode development"
         },
         "production": {
-          "buildTarget": "frontend:build:production"
+          "command": "vite preview --mode production"
         }
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/packages/frontend"],
       "options": {
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/frontend"
+        "command": "vitest run",
+        "cwd": "packages/frontend",
+        "passWithNoTests": true
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "nx:run-commands",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/frontend/**/*.{ts,tsx,js,jsx}"]
+        "command": "eslint \"**/*.{ts,tsx,js,jsx}\"",
+        "cwd": "packages/frontend"
       }
     }
   },

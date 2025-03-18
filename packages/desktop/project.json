@@ -5,27 +5,23 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/packages/desktop"],
       "options": {
-        "outputPath": "dist/packages/desktop",
-        "main": "packages/desktop/src/index.ts",
-        "tsConfig": "packages/desktop/tsconfig.json",
-        "assets": ["packages/desktop/*.md"],
-        "additionalEntryPoints": []
+        "command": "tsc -p tsconfig.json",
+        "cwd": "packages/desktop"
       },
       "configurations": {
         "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false
+          "command": "tsc -p tsconfig.json --sourceMap false"
         }
       }
     },
     "serve": {
-      "executor": "@nx/js:node",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "desktop:build"
+        "command": "node dist/packages/desktop/index.js",
+        "cwd": "."
       }
     },
     "dev": {
@@ -36,17 +32,19 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "nx:run-commands",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/desktop/**/*.ts"]
+        "command": "eslint \"**/*.ts\"",
+        "cwd": "packages/desktop"
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/packages/desktop"],
       "options": {
-        "jestConfig": "packages/desktop/jest.config.ts",
+        "command": "jest",
+        "cwd": "packages/desktop",
         "passWithNoTests": true
       },
       "configurations": {

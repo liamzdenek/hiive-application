@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4a00e0" />
+      <stop offset="100%" stop-color="#8e2de2" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#gradient)" />
+  <path d="M20 16v32M44 16v32M20 32h24" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  <!-- Financial chart line -->
+  <polyline points="16,48 24,40 32,44 40,36 48,32" stroke="#50e3c2" stroke-width="2" fill="none" stroke-linecap="round" />
+</svg>

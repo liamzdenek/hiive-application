@@ -119,32 +119,112 @@ app.get('/api/companies/:companyId/sentiment', async (req, res) => {
 });
 
 // Get company sentiment history
-app.get('/api/companies/:companyId/sentiment/history', (req, res) => {
-  const { companyId } = req.params;
-  const period = (req.query.period as string) || 'daily';
-  const from = (req.query.from as string) || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const to = (req.query.to as string) || new Date().toISOString();
-  
-  // For demo purposes, generate mock data
-  const data = [];
-  const fromDate = new Date(from);
-  const toDate = new Date(to);
-  const dayDiff = Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
-  
-  for (let i = 0; i < dayDiff; i++) {
-    const date = new Date(fromDate.getTime() + i * 24 * 60 * 60 * 1000);
-    data.push({
-      date: date.toISOString().split('T')[0],
-      sentiment: 0.4 + Math.random() * 0.4, // Random between 0.4 and 0.8
-      volume: Math.floor(Math.random() * 10) + 1 // Random between 1 and 10
-    });
+app.get('/api/companies/:companyId/sentiment/history', async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const period = (req.query.period as string) || 'daily';
+    const from = (req.query.from as string) || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const to = (req.query.to as string) || new Date().toISOString();
+    
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+    
+    // List analysis files for the company
+    const listResponse = await s3.listObjectsV2({
+      Bucket: BUCKET_NAME,
+      Prefix: `${S3_FOLDERS.ANALYSIS}/${companyId}/`
+    }).promise();
+    
+    if (!listResponse.Contents || listResponse.Contents.length === 0) {
+      return res.json(createSuccessResponse({
+        companyId,
+        period,
+        data: []
+      }));
+    }
+    
+    // Get all analysis files
+    const analyses = [];
+    for (const item of listResponse.Contents) {
+      if (!item.Key) continue;
+      
+      try {
+        const response = await s3.getObject({
+          Bucket: BUCKET_NAME,
+          Key: item.Key
+        }).promise();
+        
+        if (response.Body) {
+          const analysis = JSON.parse(response.Body.toString());
+          
+          // Check if the analysis is within the date range
+          const processedAt = new Date(analysis.metadata.processedAt);
+          if (processedAt >= fromDate && processedAt <= toDate) {
+            analyses.push(analysis);
+          }
+        }
+      } catch (error) {
+        console.error(`Error getting analysis from ${item.Key}:`, error);
+      }
+    }
+    
+    // Group analyses by date based on the period
+    const dateMap = new Map();
+    
+    for (const analysis of analyses) {
+      const processedAt = new Date(analysis.metadata.processedAt);
+      let dateKey;
+      
+      if (period === 'daily') {
+        dateKey = processedAt.toISOString().split('T')[0]; // YYYY-MM-DD
+      } else if (period === 'weekly') {
+        // Get the Monday of the week
+        const day = processedAt.getDay();
+        const diff = processedAt.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+        const monday = new Date(processedAt);
+        monday.setDate(diff);
+        dateKey = monday.toISOString().split('T')[0];
+      } else if (period === 'monthly') {
+        dateKey = `${processedAt.getFullYear()}-${String(processedAt.getMonth() + 1).padStart(2, '0')}`;
+      } else {
+        dateKey = processedAt.toISOString().split('T')[0]; // Default to daily
+      }
+      
+      if (!dateMap.has(dateKey)) {
+        dateMap.set(dateKey, {
+          sentimentSum: 0,
+          count: 0
+        });
+      }
+      
+      const dateData = dateMap.get(dateKey);
+      dateData.sentimentSum += analysis.analysis.overallSentiment;
+      dateData.count += 1;
+    }
+    
+    // Convert the map to an array of data points
+    const data = Array.from(dateMap.entries()).map(([date, values]) => ({
+      date,
+      sentiment: values.count > 0 ? values.sentimentSum / values.count : 0,
+      volume: values.count
+    }));
+    
+    // Sort by date
+    data.sort((a, b) => a.date.localeCompare(b.date));
+    
+    res.json(createSuccessResponse({
+      companyId,
+      period,
+      data
+    }));
+  } catch (error) {
+    console.error('Error getting sentiment history:', error);
+    res.status(500).json(createErrorResponse(
+      ERROR_CODES.INTERNAL_ERROR,
+      'Error retrieving sentiment history',
+      req.headers['x-request-id'] as string
+    ));
   }
-  
-  res.json(createSuccessResponse({
-    companyId,
-    period,
-    data
-  }));
 });
 
 // Get company articles

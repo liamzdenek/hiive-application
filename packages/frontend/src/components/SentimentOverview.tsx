@@ -49,6 +49,7 @@ const SentimentOverview: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Overall Sentiment</h2>
+        
         <button 
           className={styles.refreshButton}
           onClick={() => refreshSentiment()}

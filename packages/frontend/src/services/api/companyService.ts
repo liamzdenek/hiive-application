@@ -88,9 +88,21 @@ export const companyService = {
     return {
       status: 'success',
       data: [
-        { id: 'company-123', name: 'Example Tech Inc.' },
-        { id: 'company-456', name: 'Innovate AI Corp.' },
-        { id: 'company-789', name: 'Future Finance Ltd.' },
+        { id: 'hiive', name: 'Hiive' },
+        { id: 'bytedance', name: 'ByteDance' },
+        { id: 'epic-games', name: 'Epic Games' },
+        { id: 'stripe', name: 'Stripe' },
+        { id: 'spacex', name: 'SpaceX' },
+        { id: 'instacart', name: 'Instacart' },
+        { id: 'databricks', name: 'Databricks' },
+        { id: 'chime', name: 'Chime' },
+        { id: 'plaid', name: 'Plaid' },
+        { id: 'fanatics', name: 'Fanatics' },
+        { id: 'klarna', name: 'Klarna' },
+        { id: 'nubank', name: 'Nubank' },
+        { id: 'revolut', name: 'Revolut' },
+        { id: 'canva', name: 'Canva' },
+        { id: 'automation-anywhere', name: 'Automation Anywhere' }
       ]
     };
   }

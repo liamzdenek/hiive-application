@@ -29,7 +29,7 @@ export const useAppContext = () => useContext(AppContext);
 
 // Provider component
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [selectedCompany, setSelectedCompany] = useState<string>('company-123'); // Default to first company
+  const [selectedCompany, setSelectedCompany] = useState<string>('hiive'); // Default to first company
   const [companies, setCompanies] = useState<Array<{ id: string; name: string }>>([]);
   const [sentimentData, setSentimentData] = useState<SentimentSummary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);

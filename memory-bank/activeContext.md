@@ -63,6 +63,14 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
    - Implemented script to test article processor Lambda
    - Added curl commands to test API endpoints
 
+7. **Frontend Article Upload Feature**
+   - Created ArticleUpload component for submitting articles via the web interface
+   - Implemented form with validation for article submission
+   - Added "Load Sample Article" button for quick testing
+   - Integrated with the existing article submission API endpoint
+   - Added loading screen overlay for the dashboard while data is being fetched
+   - Styled components with CSS modules for a consistent look and feel
+
 ## Next Steps
 
 1. **Frontend Development**
@@ -261,8 +269,11 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
 8. ✅ Implement article sentiment analysis with OpenRouter
 9. ✅ Create desktop script for article submission
 10. ✅ Develop testing tools for the backend
-11. Complete core UI components
-12. Connect frontend to backend API
-13. Create compelling demo data
-14. Ensure end-to-end functionality works
-15. Deploy frontend using AWS CDK
+11. ✅ Complete core UI components
+12. ✅ Connect frontend to backend API
+13. ✅ Implement article upload interface for web-based submissions
+14. ✅ Add loading screen for better user experience
+15. ✅ Create compelling demo data
+16. ✅ Ensure end-to-end functionality works
+17. ✅ Deploy frontend using AWS CDK
+18. Complete documentation

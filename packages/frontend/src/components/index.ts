@@ -1,4 +1,5 @@
 // Export all components
+export { default as ArticleUpload } from './ArticleUpload';
 export { default as CompanySelector } from './CompanySelector';
 export { default as Dashboard } from './Dashboard';
 export { default as Footer } from './Footer';

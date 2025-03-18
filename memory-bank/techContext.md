@@ -5,13 +5,14 @@
 ### Frontend
 - **React 18**: Modern UI library for building component-based interfaces
 - **TypeScript 5.x**: Strongly-typed JavaScript for improved developer experience
-- **Next.js 14**: React framework for server-side rendering and static site generation
+- **Vite**: Fast build tool for modern web development
 - **Tailwind CSS 3.x**: Utility-first CSS framework for rapid styling
 - **Recharts 2.x**: Composable charting library built on React components
 - **React Query**: Data fetching and caching library
 
 ### Backend
-- **Next.js API Routes**: Serverless functions for backend logic
+- **Node.js 20.x**: JavaScript runtime for server-side code
+- **Express 4.x**: Minimal web framework for Node.js
 - **TypeScript 5.x**: Type safety for backend code
 - **Zod**: TypeScript-first schema validation
 
@@ -21,10 +22,13 @@
 - **Cheerio**: Server-side HTML parsing for web scraping
 - **node-cache**: In-memory caching for API responses
 
-### Deployment
-- **Vercel**: Platform for frontend deployment and serverless functions
-- **Environment Variables**: For secure storage of API keys
-- **Edge Functions**: For improved global performance where applicable
+### Infrastructure & Deployment
+- **AWS CDK**: Infrastructure as Code for AWS resources
+- **AWS Lambda**: Serverless compute for backend API
+- **Amazon API Gateway**: API management and routing
+- **Amazon S3**: Static website hosting for frontend
+- **Amazon CloudFront**: Content delivery network
+- **AWS Systems Manager Parameter Store**: Secure storage for configuration and secrets
 
 ### Development Tools
 - **Vite**: Fast build tooling for modern web projects
@@ -39,11 +43,14 @@
 - Node.js 20.x LTS
 - npm or yarn for package management
 - Git for version control
+- AWS CLI configured with appropriate credentials
+- AWS CDK CLI installed globally
 - VSCode with recommended extensions:
   - ESLint
   - Prettier
   - Tailwind CSS IntelliSense
   - TypeScript Vue Plugin
+  - AWS Toolkit
 
 ### Project Structure
 ```
@@ -52,38 +59,59 @@ hiive-sentiment-analyzer/
 ├── package.json
 ├── tsconfig.json
 ├── .env.example
-├── .env.local
 ├── .gitignore
-├── next.config.js
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── common/
-│   │   ├── dashboard/
-│   │   ├── layout/
-│   │   └── charts/
-│   ├── hooks/
-│   ├── pages/
-│   │   ├── api/
-│   │   │   └── sentiment/
-│   │   ├── _app.tsx
-│   │   ├── index.tsx
-│   │   └── [company].tsx
-│   ├── services/
-│   │   ├── api/
-│   │   └── agents/
-│   ├── types/
-│   ├── utils/
-│   └── styles/
-└── tests/
+├── cdk/
+│   ├── bin/
+│   │   └── app.ts
+│   ├── lib/
+│   │   ├── frontend-stack.ts
+│   │   ├── backend-stack.ts
+│   │   └── pipeline-stack.ts
+│   ├── cdk.json
+│   └── package.json
+├── frontend/
+│   ├── index.html
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       │   ├── common/
+│       │   ├── dashboard/
+│       │   ├── layout/
+│       │   └── charts/
+│       ├── hooks/
+│       ├── pages/
+│       ├── services/
+│       │   ├── api/
+│       │   └── agents/
+│       ├── types/
+│       ├── utils/
+│       └── styles/
+├── backend/
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── src/
+│   │   ├── handlers/
+│   │   ├── agents/
+│   │   ├── middleware/
+│   │   └── utils/
+│   └── tests/
+└── shared/
+    ├── package.json
+    ├── tsconfig.json
+    └── src/
+        ├── types/
+        └── constants/
 ```
 
 ### Configuration
-- Environment variables for API keys and service endpoints
+- Environment variables for local development
+- AWS CDK configuration for infrastructure
 - TypeScript configuration for frontend and backend
 - ESLint and Prettier configuration for code quality
-- Next.js configuration for build and deployment
-- Vercel configuration for deployment settings
+- AWS Systems Manager Parameter Store for production configuration
 
 ## Technical Constraints
 
@@ -105,11 +133,12 @@ hiive-sentiment-analyzer/
 
 ### Security Considerations
 - API keys must be secured and not exposed to the client
-  - Store in Vercel environment variables
-  - Use Next.js API routes to proxy requests to external services
+  - Store in AWS Systems Manager Parameter Store
+  - Access securely from Lambda functions
 - Implement rate limiting for API endpoints
 - Sanitize user inputs to prevent injection attacks
 - Use HTTPS for all API communications
+- Configure appropriate IAM roles and permissions
 
 ### Scalability Limitations
 - Demo implementation may not scale to production workloads
@@ -131,6 +160,7 @@ hiive-sentiment-analyzer/
 - **React Query**: For data fetching and caching
 - **date-fns**: For date manipulation
 - **zod**: For schema validation
+- **aws-cdk-lib**: For defining AWS infrastructure
 
 ### Development Dependencies
 - **TypeScript**: For type checking
@@ -155,16 +185,18 @@ hiive-sentiment-analyzer/
 
 ## Deployment Strategy
 
-### Vercel Deployment
-- **CI/CD Pipeline**: Automatic deployment on push to main branch
-- **Preview Deployments**: For pull requests and feature branches
-- **Environment Variables**: Securely store API keys and configuration
-- **Serverless Functions**: Use Next.js API routes for backend functionality
-- **Edge Caching**: Improve performance for static content
-- **Analytics**: Track usage and performance metrics
+### AWS CDK Deployment
+- **Infrastructure as Code**: Define all AWS resources using TypeScript
+- **CI/CD Pipeline**: AWS CodePipeline for automated deployments
+- **Frontend Hosting**: S3 + CloudFront for static website hosting
+- **Backend Services**: Lambda functions for API endpoints
+- **API Management**: API Gateway for routing and management
+- **Configuration Management**: Systems Manager Parameter Store for secrets and configuration
+- **Monitoring**: CloudWatch for logs and metrics
 
 ### Deployment Considerations
 - **API Rate Limits**: Ensure external API usage stays within free tier limits
-- **Cold Starts**: Minimize impact of serverless function cold starts
+- **Cold Starts**: Minimize impact of Lambda function cold starts
 - **Error Handling**: Implement robust error handling for production environment
-- **Monitoring**: Set up basic monitoring for demo purposes
+- **Cost Management**: Utilize AWS Free Tier where possible
+- **Security**: Configure appropriate IAM roles and permissions

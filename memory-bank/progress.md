@@ -17,8 +17,8 @@ As this is a new project in the planning phase, no components have been implemen
 - [ ] Insights feed
 
 ### Backend Services
-- [ ] Next.js API routes setup
-- [ ] Serverless functions for sentiment analysis
+- [ ] Express server setup for Lambda
+- [ ] API endpoints for sentiment analysis
 - [ ] Caching mechanism
 - [ ] Error handling middleware
 
@@ -29,27 +29,29 @@ As this is a new project in the planning phase, no components have been implemen
 - [ ] Financial report analysis agent
 - [ ] Insight synthesis agent
 
+### AWS Infrastructure (CDK)
+- [ ] Frontend stack (S3, CloudFront)
+- [ ] Backend stack (API Gateway, Lambda)
+- [ ] Parameter Store configuration
+- [ ] Logging and monitoring setup
+- [ ] CI/CD pipeline (optional)
+
 ### Data Integration
 - [ ] Mock data generation
 - [ ] API integrations (where feasible)
 - [ ] Data transformation utilities
 
-### Deployment
-- [ ] Vercel project setup
-- [ ] Environment variables configuration
-- [ ] CI/CD pipeline configuration
-- [ ] Production deployment
-- [ ] Performance monitoring
-
 ### Testing & Optimization
 - [ ] Unit tests for key components
 - [ ] Performance optimization
 - [ ] Responsive design testing
+- [ ] Infrastructure testing
 
 ### Documentation
 - [ ] README with setup instructions
 - [ ] Architecture documentation
 - [ ] API documentation
+- [ ] Infrastructure documentation
 - [ ] Demo script
 
 ## Current Status
@@ -65,22 +67,23 @@ No issues have been identified yet as development has not started. This section 
 | Phase | Status | Estimated Completion |
 |-------|--------|----------------------|
 | Planning & Architecture | In Progress | Day 1 - Morning |
-| Project Setup & Vercel Configuration | Not Started | Day 1 - Morning |
+| Project Setup & CDK Initialization | Not Started | Day 1 - Morning |
 | Core Frontend Components | Not Started | Day 1 - Afternoon |
-| Next.js API Routes & AI Agents | Not Started | Day 1 - Afternoon |
-| Integration & Testing | Not Started | Day 1 - Evening |
-| Deployment & Refinement | Not Started | Day 2 - Morning |
+| Lambda Functions & API Gateway | Not Started | Day 1 - Afternoon |
+| AI Agent Implementation | Not Started | Day 1 - Evening |
+| Infrastructure Deployment | Not Started | Day 2 - Morning |
+| Integration & Testing | Not Started | Day 2 - Morning |
 | Documentation & Final Demo | Not Started | Day 2 - Afternoon |
 
 ## Milestones
 
 - [ ] Project repository initialized
-- [ ] Vercel project configured
+- [ ] AWS CDK project configured
 - [ ] Basic UI components implemented
-- [ ] API routes functional
+- [ ] Lambda functions created
 - [ ] AI agents processing sample data
 - [ ] End-to-end functionality working
-- [ ] Application deployed to Vercel
+- [ ] Application deployed to AWS
 - [ ] Documentation completed
 - [ ] Demo ready for presentation
 
@@ -89,4 +92,5 @@ No issues have been identified yet as development has not started. This section 
 - Focus on creating a compelling demo that showcases both technical skills and understanding of Hiive's business
 - Prioritize visual appeal and user experience to make a strong impression
 - Ensure the demo clearly communicates how this could add value to Hiive's platform
-- Vercel deployment provides a live, accessible demo that can be easily shared with Hiive's team
+- AWS CDK deployment demonstrates infrastructure as code expertise and DevOps capabilities
+- Ensure all AWS resources are properly tagged for cost tracking and management

@@ -8,7 +8,7 @@ Create a demo application that showcases how Agentic AI can enhance Hiive's priv
 2. Implement an AI-powered sentiment analysis system using LLMs
 3. Create a dashboard to visualize sentiment trends for companies in Hiive's marketplace
 4. Demonstrate how this could integrate with Hiive's existing platform
-5. Deploy the application to Vercel for easy access and demonstration
+5. Deploy the application using AWS CDK for infrastructure as code
 6. Complete within 1-2 days of development time
 
 ## Goals
@@ -17,7 +17,7 @@ Create a demo application that showcases how Agentic AI can enhance Hiive's priv
 - Solve a real problem for Hiive: providing deeper insights into private market sentiment
 - Highlight how AI agents can automate complex research tasks
 - Present a polished, production-ready demo that could be extended into a full feature
-- Provide a live, accessible demo through Vercel deployment
+- Demonstrate infrastructure as code expertise with AWS CDK deployment
 
 ## Success Criteria
 - Application successfully analyzes sentiment from multiple sources
@@ -25,11 +25,12 @@ Create a demo application that showcases how Agentic AI can enhance Hiive's priv
 - Performance is optimized for quick insights delivery
 - Code is well-structured, documented, and maintainable
 - Project demonstrates clear value-add for Hiive's platform
-- Application is successfully deployed to Vercel with a public URL
+- Infrastructure is defined as code using AWS CDK
+- Application is successfully deployed to AWS
 
 ## Constraints
 - Must be completable within 1-2 days
 - Should focus on demonstrating core functionality rather than building a complete product
 - Must leverage AI agents for data processing and analysis
 - Should align with Hiive's tech stack preferences (React, TypeScript, GraphQL)
-- Must be deployable to Vercel without complex backend requirements
+- Must use AWS CDK for infrastructure definition and deployment

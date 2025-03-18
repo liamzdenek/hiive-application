@@ -8,7 +8,7 @@ We are developing a demo application for a job application to Hiive, a marketpla
 2. Innovative use of AI for financial market analysis
 3. Solving a real problem for Hiive: providing deeper insights into private market sentiment
 4. How AI agents can automate complex research tasks
-5. Deployment to Vercel for a live, accessible demo
+5. Infrastructure as code expertise with AWS CDK deployment
 
 The application will analyze market sentiment for pre-IPO companies by processing news articles, social media, and financial reports to provide Hiive users with deeper insights into potential investments.
 
@@ -19,11 +19,11 @@ This is a new project, so there are no recent changes to document. We are curren
 ## Next Steps
 
 1. **Project Setup**
-   - Initialize Next.js project with TypeScript
+   - Initialize React/TypeScript project with Vite
    - Configure Tailwind CSS
    - Set up project structure
    - Install required dependencies
-   - Configure Vercel deployment
+   - Initialize AWS CDK project
 
 2. **Frontend Development**
    - Create basic layout components
@@ -33,8 +33,8 @@ This is a new project, so there are no recent changes to document. We are curren
    - Implement responsive design
 
 3. **Backend Development**
-   - Set up Next.js API routes
-   - Create serverless functions for sentiment analysis
+   - Set up Express server for Lambda
+   - Create API endpoints
    - Implement caching mechanism
    - Develop agent orchestrator
 
@@ -45,15 +45,22 @@ This is a new project, so there are no recent changes to document. We are curren
    - Implement financial report analysis agent
    - Develop insight synthesis agent
 
-5. **Integration & Testing**
+5. **Infrastructure Development**
+   - Define S3 bucket for frontend hosting
+   - Configure CloudFront distribution
+   - Set up API Gateway
+   - Define Lambda functions
+   - Configure Parameter Store for secrets
+
+6. **Integration & Testing**
    - Connect frontend to backend
    - Test end-to-end functionality
    - Optimize performance
    - Fix any bugs
 
-6. **Deployment & Documentation**
-   - Deploy to Vercel
-   - Set up environment variables
+7. **Deployment & Documentation**
+   - Deploy using AWS CDK
+   - Set up environment variables in Parameter Store
    - Create README with setup instructions
    - Document architecture and design decisions
    - Prepare demo script
@@ -63,14 +70,14 @@ This is a new project, so there are no recent changes to document. We are curren
 
 ### Technical Decisions
 
-1. **Next.js vs. Create React App**
-   - Decision: Use Next.js for the frontend
-   - Rationale: Next.js provides better performance, SEO capabilities, built-in API routes for serverless functions, and seamless deployment to Vercel
+1. **React with Vite vs. Create React App**
+   - Decision: Use React with Vite for the frontend
+   - Rationale: Vite provides faster build times and a better development experience
    - Status: Decided
 
 2. **Backend Approach**
-   - Decision: Use Next.js API Routes instead of a separate Express server
-   - Rationale: Simplifies deployment to Vercel, eliminates need for separate hosting, and provides serverless scaling
+   - Decision: Use AWS Lambda with Express adapter
+   - Rationale: Serverless architecture aligns with modern practices and is cost-effective for demos
    - Status: Decided
 
 3. **State Management Approach**
@@ -84,8 +91,8 @@ This is a new project, so there are no recent changes to document. We are curren
    - Status: Under consideration
 
 5. **Deployment Platform**
-   - Decision: Use Vercel for deployment
-   - Rationale: Optimized for Next.js, provides serverless functions, global CDN, and simplified environment variable management
+   - Decision: Use AWS CDK for infrastructure as code
+   - Rationale: Demonstrates infrastructure as code expertise, provides consistent language across application and infrastructure
    - Status: Decided
 
 ### Implementation Considerations
@@ -111,8 +118,13 @@ This is a new project, so there are no recent changes to document. We are curren
    - Status: To be implemented
 
 5. **API Key Security**
-   - Challenge: Securing API keys in a publicly deployed application
-   - Approach: Use Vercel environment variables and Next.js API routes to proxy requests
+   - Challenge: Securing API keys in a deployed application
+   - Approach: Use AWS Systems Manager Parameter Store and secure Lambda access
+   - Status: To be implemented
+
+6. **AWS Infrastructure**
+   - Challenge: Creating a secure, cost-effective infrastructure
+   - Approach: Follow AWS best practices, utilize free tier where possible
    - Status: To be implemented
 
 ### Key Risks
@@ -130,14 +142,19 @@ This is a new project, so there are no recent changes to document. We are curren
    - Mitigation: Start with simple implementations, enhance if time permits
 
 4. **Deployment Issues**
-   - Risk: Unforeseen issues with Vercel deployment
+   - Risk: Unforeseen issues with AWS CDK deployment
    - Mitigation: Set up deployment early in the process, test with minimal viable application
+
+5. **AWS Costs**
+   - Risk: Incurring unexpected AWS costs
+   - Mitigation: Utilize free tier services, implement proper cleanup procedures
 
 ## Current Priorities
 
 1. Set up project structure and basic scaffolding
-2. Configure Vercel deployment early
+2. Initialize AWS CDK project and define basic infrastructure
 3. Implement core UI components
 4. Develop basic AI agent functionality
 5. Create compelling demo data
 6. Ensure end-to-end functionality works
+7. Deploy using AWS CDK

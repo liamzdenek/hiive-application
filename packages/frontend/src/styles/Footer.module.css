@@ -1,0 +1,38 @@
+.footer {
+  background-color: #f5f5f5;
+  padding: 1.5rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+.copyright {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.version {
+  font-size: 0.75rem;
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.disclaimer {
+  font-size: 0.75rem;
+  color: #999;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 1rem 0;
+    margin-top: 1.5rem;
+  }
+}

@@ -1,0 +1,154 @@
+.container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  color: #333;
+}
+
+.insightsList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+
+.insightItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.insightItem:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.insightBullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #0066cc;
+  margin-top: 0.5rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.insightText {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.sourceInfo {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sourcesTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.sourcesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.sourceItem {
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.sourceLabel {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+  text-transform: capitalize;
+}
+
+.sourceCount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.timeInfo {
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeItem {
+  text-align: center;
+  flex: 1;
+}
+
+.timeLabel {
+  font-size: 0.875rem;
+  color: #666;
+  margin-right: 0.5rem;
+}
+
+.timeValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.loading {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  padding: 1.5rem;
+  text-align: center;
+  color: #ff3b30;
+  background-color: #fff2f2;
+  border-radius: 8px;
+  border: 1px solid #ffcccb;
+}
+
+.noData {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+
+@media (max-width: 768px) {
+  .sourcesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .timeInfo {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .timeItem {
+    display: flex;
+    justify-content: space-between;
+  }
+}

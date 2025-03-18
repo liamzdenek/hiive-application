@@ -140,23 +140,90 @@ node dist/packages/desktop/index.js submit --file <path-to-article> --company <c
 
 ## Deployment
 
-The application can be deployed to AWS using the CDK:
+The application can be deployed to AWS using the CDK. We provide several deployment scripts for convenience:
+
+### Deploy Backend Only
 
 ```bash
-nx deploy cdk
-# or
-nx run cdk:deploy
+# Set your OpenRouter API key
+export OPENROUTER_API_KEY=your-api-key
+
+# Run the backend deployment script
+./packages/cdk/scripts/deploy-backend.sh
 ```
+
+### Deploy Frontend Only
+
+```bash
+# Set the API URL (obtained from backend deployment)
+export API_URL=https://your-api-gateway-url
+
+# Run the frontend deployment script
+./packages/frontend/deploy.sh
+```
+
+### Deploy Both Backend and Frontend
+
+```bash
+# Set your OpenRouter API key
+export OPENROUTER_API_KEY=your-api-key
+
+# Run the all-in-one deployment script
+./packages/cdk/scripts/deploy-all.sh
+```
+
+This script will:
+1. Deploy the backend stack
+2. Extract the API URL from the backend stack outputs
+3. Deploy the frontend stack with the correct API URL
+4. Output the URLs for both the backend API and frontend application
 
 ## Architecture
 
 The application follows a serverless architecture:
 
 - **Frontend**: React application hosted on S3 and served through CloudFront
-- **Backend**: Express API running on AWS Lambda and API Gateway
+- **Backend**: Express API running on AWS Lambda and API Gateway using serverless-http
 - **Storage**: S3 buckets for static assets and article storage
 - **Processing**: Lambda functions for article processing and sentiment analysis
 - **Infrastructure**: Defined using AWS CDK for infrastructure as code
+
+### Serverless Express Integration
+
+The backend uses the `serverless-http` library to integrate Express with AWS Lambda:
+
+```typescript
+import serverless from 'serverless-http';
+import app from './index';
+
+// Create a serverless handler for the Express app
+export const apiHandler = serverless(app, {
+  // Configuration options
+  requestId: 'awsRequestId',
+  
+  // Add custom request/response handling
+  request: (request, event, context) => {
+    // Custom request handling
+  },
+  response: (response) => {
+    // Custom response handling
+  }
+});
+
+// Export a promise-based handler for more flexibility
+export const handler = async (event, context) => {
+  try {
+    // Additional processing before handling the request
+    const result = await apiHandler(event, context);
+    // Additional processing after handling the request
+    return result;
+  } catch (error) {
+    // Error handling
+  }
+};
+```
+
+This approach allows us to use the familiar Express framework while still benefiting from the serverless architecture of AWS Lambda.
 
 ## Features
 

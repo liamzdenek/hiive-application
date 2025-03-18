@@ -81,7 +81,9 @@ The following components have been implemented:
 - [x] Node.js CLI application structure
 - [x] Command-line interface with Commander.js
 - [x] Complete article submission functionality
-- [x] S3 upload capabilities with proper metadata
+- [x] HTTP POST submission instead of S3 upload
+- [x] Article generation using OpenRouter API
+- [x] Batch article generation for multiple companies
 - [x] Error handling and validation
 - [ ] Installation and usage documentation
 
@@ -92,7 +94,7 @@ The following components have been implemented:
 - [ ] Financial report analysis agent
 - [ ] Insight synthesis agent
 - [x] Article sentiment analysis agent
-- [x] OpenRouter integration for LLM access with meta-llama/llama-3.1-8b-instruct:free model
+- [x] OpenRouter integration for LLM access with meta-llama/llama-3.1-70b-instruct model
 
 ### AWS Infrastructure (CDK)
 - [x] Complete backend stack structure
@@ -130,7 +132,7 @@ The backend infrastructure has been successfully implemented and deployed to AWS
 
 1. Frontend build requires proper Vite configuration
 2. API Gateway to Express integration needs to be tested with more complex scenarios
-3. ~~Sentiment analysis is currently using a simple keyword-based approach, which could be enhanced~~ (Resolved: Now using meta-llama/llama-3.1-8b-instruct:free through OpenRouter)
+3. ~~Sentiment analysis is currently using a simple keyword-based approach, which could be enhanced~~ (Resolved: Now using meta-llama/llama-3.1-70b-instruct through OpenRouter)
 4. ~~Need to implement proper error handling for edge cases in the Lambda functions~~ (Resolved: Implemented robust error handling in Lambda functions)
 5. Fixed Lambda bundling configuration to include aws-sdk as a nodeModule instead of an externalModule
 6. OpenRouter API key must be provided as an environment variable during deployment
@@ -178,7 +180,7 @@ The backend infrastructure has been successfully implemented and deployed to AWS
 - The API Gateway is properly integrated with the Express app
 - The deployment is configured to use the 'lz-demos' AWS profile
 - Testing scripts have been created to verify the functionality
-- Implemented OpenRouter integration with meta-llama/llama-3.1-8b-instruct:free model for sentiment analysis
+- Implemented OpenRouter integration with meta-llama/llama-3.1-70b-instruct model for sentiment analysis
 - The article processor now uses LLM for analysis with no fallback to ensure high-quality results
 - The summary aggregator has been enhanced to better handle the LLM-generated analysis
 - Focus now shifts to implementing the frontend components

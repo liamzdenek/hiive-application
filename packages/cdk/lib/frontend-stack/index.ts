@@ -4,10 +4,19 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as path from 'path';
+
+export interface FrontendStackProps extends cdk.StackProps {
+  apiUrl?: string;
+}
 
 export class FrontendStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: FrontendStackProps) {
     super(scope, id, props);
+    
+    // Get the API URL from props or use a default value
+    const apiUrl = props?.apiUrl || 'http://localhost:3001';
 
     // Create an S3 bucket for the frontend assets
     const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
@@ -64,6 +73,23 @@ export class FrontendStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'WebsiteBucketName', {
       value: websiteBucket.bucketName,
       description: 'The name of the S3 bucket',
+    });
+    
+    // Deploy the frontend assets to S3 from a static directory
+    // The frontend should be built separately before running CDK deployment
+    new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+      sources: [
+        s3deploy.Source.asset(path.join(__dirname, '../../../frontend/dist')),
+      ],
+      destinationBucket: websiteBucket,
+      distribution,
+      distributionPaths: ['/*'],
+    });
+    
+    // Output the API URL used for the frontend
+    new cdk.CfnOutput(this, 'ApiUrl', {
+      value: apiUrl,
+      description: 'The API URL used by the frontend',
     });
   }
 }

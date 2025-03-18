@@ -13,9 +13,19 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || process.env.AWS_REGION || 'us-east-1',
 };
 
-// Create only the backend stack for now
-// new FrontendStack(app, 'HiiveSentimentFrontendStack', { env });
-new BackendStack(app, 'HiiveSentimentBackendStack', { env });
+// Create the backend stack
+const backendStack = new BackendStack(app, 'HiiveSentimentBackendStack', { env });
+
+// Get the API URL from the backend stack
+const apiUrl = backendStack.apiUrl;
+
+// Create the frontend stack with the API URL
+new FrontendStack(app, 'HiiveSentimentFrontendStack', {
+  env,
+  apiUrl
+});
+
+// Pipeline stack is optional for this demo
 // new PipelineStack(app, 'HiiveSentimentPipelineStack', { env });
 
 // Add tags to all resources

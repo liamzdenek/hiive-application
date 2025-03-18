@@ -84,8 +84,10 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
 
 3. **Desktop Script Development**
    - ✅ Complete article submission functionality
-   - ✅ Implement S3 upload capabilities using AWS SDK
+   - ✅ Implement HTTP POST for article submission
    - ✅ Add error handling and validation
+   - ✅ Implement article generation functionality
+   - ✅ Implement batch article generation
    - Create documentation for installation and usage
 
 4. **AI Agent Implementation**
@@ -95,7 +97,7 @@ We have successfully implemented the backend infrastructure using AWS CDK, inclu
    - Implement financial report analysis agent
    - Develop insight synthesis agent
    - ✅ Create article sentiment analysis agent
-   - ✅ Enhance sentiment analysis with OpenRouter integration using meta-llama/llama-3.1-8b-instruct:free model
+   - ✅ Enhance sentiment analysis with OpenRouter integration using meta-llama/llama-3.1-70b-instruct model
 
 5. **Infrastructure Development**
    - Complete S3 bucket configuration for frontend hosting

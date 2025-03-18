@@ -11,6 +11,9 @@ import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as path from 'path';
 
 export class BackendStack extends cdk.Stack {
+  // Expose the API URL as a public property
+  public readonly apiUrl: string;
+  
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -48,7 +51,7 @@ export class BackendStack extends cdk.Stack {
     const apiLambda = new nodejs.NodejsFunction(this, 'ApiLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
       entry: path.join(__dirname, '../../../backend/src/lambda.ts'),
-      handler: 'apiHandler',
+      handler: 'handler', // Using the new promise-based handler
       environment: {
         ARTICLES_BUCKET: articlesBucket.bucketName,
         OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || 'demo-key',
@@ -167,9 +170,12 @@ export class BackendStack extends cdk.Stack {
     const companyArticles = company.addResource('articles');
     companyArticles.addMethod('GET', lambdaIntegration);
 
+    // Set the API URL property
+    this.apiUrl = api.url;
+    
     // Output the API URL
     new cdk.CfnOutput(this, 'ApiUrl', {
-      value: api.url,
+      value: this.apiUrl,
       description: 'The URL of the API Gateway',
     });
 

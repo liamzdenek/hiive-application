@@ -1,0 +1,211 @@
+.container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.totalCount {
+  font-size: 0.875rem;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.articlesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.articleItem {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.articleItem:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.articleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.articleTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+  flex: 1;
+}
+
+.articleLink {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.articleLink:hover {
+  color: #004c99;
+  text-decoration: underline;
+}
+
+.sentimentBadge {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: white;
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.positive {
+  background-color: #34c759;
+}
+
+.neutral {
+  background-color: #ffcc00;
+  color: #333;
+}
+
+.negative {
+  background-color: #ff3b30;
+}
+
+.articleMeta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.articleSource {
+  text-transform: capitalize;
+}
+
+.insightsContainer {
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.insightsTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.insightsList {
+  margin: 0;
+  padding: 0 0 0 1.25rem;
+}
+
+.insightItem {
+  font-size: 0.875rem;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.insightItem:last-child {
+  margin-bottom: 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.pageButton {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.pageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.loading {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  padding: 1.5rem;
+  text-align: center;
+  color: #ff3b30;
+  background-color: #fff2f2;
+  border-radius: 8px;
+  border: 1px solid #ffcccb;
+}
+
+.noData {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+
+@media (max-width: 768px) {
+  .articleHeader {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .sentimentBadge {
+    align-self: flex-start;
+  }
+  
+  .articleMeta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

@@ -3,7 +3,7 @@ import axios from 'axios';
 // OpenRouter API configuration
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL_NAME = 'meta-llama/llama-3.1-8b-instruct:free';
+const MODEL_NAME = 'meta-llama/llama-3.1-70b-instruct';
 
 // Check if API key is set
 if (!OPENROUTER_API_KEY) {

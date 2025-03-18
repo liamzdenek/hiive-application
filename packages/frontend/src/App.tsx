@@ -1,16 +1,19 @@
 import React from 'react';
+import { AppProvider } from './context/AppContext';
+import { Header, Dashboard, Footer } from './components';
 import styles from './styles/App.module.css';
 
 function App() {
   return (
-    <div className={styles.app}>
-      <header className={styles.appHeader}>
-        <h1>Hiive AI Market Sentiment Analyzer</h1>
-      </header>
-      <main className={styles.main}>
-        <p>Welcome to the Hiive AI Market Sentiment Analyzer</p>
-      </main>
-    </div>
+    <AppProvider>
+      <div className={styles.app}>
+        <Header />
+        <main className={styles.main}>
+          <Dashboard />
+        </main>
+        <Footer />
+      </div>
+    </AppProvider>
   );
 }
 

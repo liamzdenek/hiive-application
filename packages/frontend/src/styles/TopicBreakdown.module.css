@@ -1,0 +1,161 @@
+.container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  color: #333;
+}
+
+.topics {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.topicItem {
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 1.25rem;
+}
+
+.topicItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.topicHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.topicName {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.topicVolume {
+  font-size: 0.875rem;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.topicDetails {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sentimentBar {
+  flex-grow: 1;
+  height: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sentimentFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.positive {
+  background-color: #34c759;
+}
+
+.neutral {
+  background-color: #ffcc00;
+}
+
+.negative {
+  background-color: #ff3b30;
+}
+
+.sentimentInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 60px;
+}
+
+.sentimentScore {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.sentimentTrend {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.trendUp {
+  color: #34c759;
+}
+
+.trendDown {
+  color: #ff3b30;
+}
+
+.trendNeutral {
+  color: #666;
+}
+
+.loading {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  padding: 1.5rem;
+  text-align: center;
+  color: #ff3b30;
+  background-color: #fff2f2;
+  border-radius: 8px;
+  border: 1px solid #ffcccb;
+}
+
+.noData {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+
+@media (max-width: 768px) {
+  .topicHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .topicDetails {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .sentimentInfo {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-width: unset;
+  }
+}

@@ -34,17 +34,20 @@ This is a new project, so there are no recent changes to document. We are curren
 
 3. **Backend Development**
    - Set up Express server for Lambda
-   - Create API endpoints
+   - Create API endpoints (as defined in apiContracts.md)
    - Implement caching mechanism
    - Develop agent orchestrator
    - Create article processor Lambda function
+   - Implement summary aggregator Lambda function
+   - Set up S3 event notifications for article processing
 
 4. **Desktop Script Development**
    - Create Node.js CLI application
-   - Implement article submission functionality
-   - Configure S3 upload capabilities
-   - Add user-friendly command-line interface
+   - Implement article submission functionality (per apiContracts.md)
+   - Configure S3 upload capabilities using AWS SDK
+   - Add user-friendly command-line interface with Commander.js
    - Implement error handling and validation
+   - Create documentation for installation and usage
 
 5. **AI Agent Implementation**
    - Configure LangChain.js
@@ -56,10 +59,12 @@ This is a new project, so there are no recent changes to document. We are curren
 
 6. **Infrastructure Development**
    - Define S3 bucket for frontend hosting
-   - Define S3 bucket for article storage
+   - Define S3 bucket for article storage with appropriate folder structure
+   - Configure S3 event notifications for new article uploads
    - Configure CloudFront distribution
-   - Set up API Gateway
-   - Define Lambda functions
+   - Set up API Gateway with routes defined in apiContracts.md
+   - Define Lambda functions for API endpoints and article processing
+   - Set up CloudWatch scheduled event for summary aggregation
    - Configure Parameter Store for secrets
 
 6. **Integration & Testing**

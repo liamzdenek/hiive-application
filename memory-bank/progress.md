@@ -18,17 +18,20 @@ As this is a new project in the planning phase, no components have been implemen
 
 ### Backend Services
 - [ ] Express server setup for Lambda
-- [ ] API endpoints for sentiment analysis
+- [ ] API endpoints for sentiment analysis (as defined in apiContracts.md)
 - [ ] Caching mechanism
 - [ ] Error handling middleware
 - [ ] Article processor Lambda function
+- [ ] Summary aggregator Lambda function
+- [ ] S3 event notification configuration
 
 ### Desktop Script
 - [ ] Node.js CLI application structure
-- [ ] Article submission functionality
-- [ ] S3 upload capabilities
-- [ ] Command-line interface
+- [ ] Article submission functionality (per apiContracts.md)
+- [ ] S3 upload capabilities with proper metadata
+- [ ] Command-line interface with Commander.js
 - [ ] Error handling and validation
+- [ ] Installation and usage documentation
 
 ### AI Agent System
 - [ ] Agent orchestrator
@@ -41,7 +44,8 @@ As this is a new project in the planning phase, no components have been implemen
 ### AWS Infrastructure (CDK)
 - [ ] Frontend stack (S3, CloudFront)
 - [ ] Backend stack (API Gateway, Lambda)
-- [ ] Article storage stack (S3)
+- [ ] Article storage stack (S3 with event notifications)
+- [ ] Scheduled Lambda for summary aggregation
 - [ ] Parameter Store configuration
 - [ ] Logging and monitoring setup
 - [ ] CI/CD pipeline (optional)

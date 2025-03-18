@@ -64,6 +64,16 @@ flowchart TD
     Script --> ArticleStorage
     ArticleStorage --> ArticleProcessor
     
+    note right of Script
+      Submits articles using
+      AWS SDK (see apiContracts.md)
+    end note
+    
+    note right of ArticleStorage
+      S3 bucket with event
+      notifications enabled
+    end note
+    
     APIRoutes <--> AgentOrchestrator
     AgentOrchestrator <--> NewsHandler
     AgentOrchestrator <--> SocialHandler
@@ -258,14 +268,16 @@ sequenceDiagram
     end
     
     alt Desktop Script Flow
-        User->>Desktop: Submit article
-        Desktop->>S3: Upload article
-        S3->>Lambda: Trigger article processor
-        Lambda->>Agents: Process article
+        User->>Desktop: Submit article (hiive-submit-article command)
+        Desktop->>S3: Upload article JSON to articles/{companyId}/{timestamp}-{uuid}.json
+        S3->>Lambda: Trigger article processor via S3 event notification
+        Lambda->>S3: Retrieve article content
+        Lambda->>Agents: Process article with AI agents
         Agents->>LLM: Analyze with LLM
         LLM->>Agents: Return sentiment analysis
         Agents->>Lambda: Return results
-        Lambda->>S3: Store analysis results
+        Lambda->>S3: Store analysis at analysis/{companyId}/{timestamp}-{uuid}.json
+        Lambda->>S3: Update company summary at summaries/{companyId}/latest.json
     end
 ```
 

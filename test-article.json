@@ -1,0 +1,10 @@
+{
+  "companyId": "company-123",
+  "title": "Example Tech Inc. Reports Strong Q1 Growth",
+  "content": "Example Tech Inc. today announced its Q1 2025 financial results, reporting a 25% increase in revenue compared to the same period last year. The company's cloud services division saw particularly strong growth, with revenue up 40% year-over-year. CEO Jane Smith attributed the growth to increased enterprise adoption of the company's AI-powered solutions. 'Our investments in artificial intelligence are paying off as more businesses recognize the value of our platform,' said Smith. The company also announced plans to expand into new markets in Europe and Asia, with several strategic partnerships already in place. Despite some concerns about increasing competition in the market, analysts remain positive about the company's prospects, citing its strong product pipeline and innovative approach to customer solutions. The company's stock price rose 5% following the announcement.",
+  "source": "financial-times",
+  "publicationDate": "2025-03-15T10:30:00Z",
+  "url": "https://example.com/article",
+  "author": "John Doe",
+  "tags": ["earnings", "financial-results", "tech-sector", "growth"]
+}

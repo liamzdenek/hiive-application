@@ -13,10 +13,10 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || process.env.AWS_REGION || 'us-east-1',
 };
 
-// Create stacks
-new FrontendStack(app, 'HiiveSentimentFrontendStack', { env });
+// Create only the backend stack for now
+// new FrontendStack(app, 'HiiveSentimentFrontendStack', { env });
 new BackendStack(app, 'HiiveSentimentBackendStack', { env });
-new PipelineStack(app, 'HiiveSentimentPipelineStack', { env });
+// new PipelineStack(app, 'HiiveSentimentPipelineStack', { env });
 
 // Add tags to all resources
 cdk.Tags.of(app).add('Project', 'HiiveSentimentAnalyzer');

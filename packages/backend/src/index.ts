@@ -1,36 +1,315 @@
 import express from 'express';
-import { createSuccessResponse } from '@hiive/shared';
+import { S3 } from 'aws-sdk';
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  ArticleData,
+  formatArticleKey,
+  generateId,
+  S3_FOLDERS,
+  ERROR_CODES
+} from '@hiive/shared';
 
 const app = express();
 const port = process.env.PORT || 3001;
+const s3 = new S3();
+
+// Get the S3 bucket name from the environment variable
+const ARTICLES_BUCKET = process.env.ARTICLES_BUCKET;
+if (!ARTICLES_BUCKET) {
+  console.warn('ARTICLES_BUCKET environment variable is not set. S3 operations will fail.');
+  throw new Error('ARTICLES_BUCKET environment variable is required');
+}
+// Ensure TypeScript knows ARTICLES_BUCKET is not undefined
+const BUCKET_NAME = ARTICLES_BUCKET as string;
 
 // Middleware
 app.use(express.json());
+
+// CORS middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
+  return; // Explicitly return to satisfy TypeScript
+});
+
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Error:', err);
+  
+  res.status(500).json(createErrorResponse(
+    ERROR_CODES.INTERNAL_ERROR,
+    'An internal server error occurred',
+    req.headers['x-request-id'] as string
+  ));
+});
 
 // Routes
 app.get('/api/health', (_, res) => {
   res.json(createSuccessResponse({ status: 'ok' }));
 });
 
-app.get('/api/companies/:companyId/sentiment', (req, res) => {
-  // This would be implemented with actual data in the future
-  res.json(createSuccessResponse({
-    companyId: req.params.companyId,
-    companyName: 'Example Tech Inc.',
-    lastUpdated: new Date().toISOString(),
-    overallSentiment: {
-      score: 0.65,
-      trend: 0.05,
-      confidence: 0.82
-    },
-    topicSentiments: [],
-    recentInsights: [],
-    sources: {},
-    timeDistribution: {
-      last24h: 0,
-      last7d: 0,
-      last30d: 0
+// Get company sentiment
+app.get('/api/companies/:companyId/sentiment', async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    
+    // Get the sentiment summary from S3
+    const summaryKey = `summaries/${companyId}/latest.json`;
+    
+    try {
+      const summaryResponse = await s3.getObject({
+        Bucket: BUCKET_NAME,
+        Key: summaryKey
+      }).promise();
+      
+      if (summaryResponse.Body) {
+        const summary = JSON.parse(summaryResponse.Body.toString());
+        res.json(createSuccessResponse(summary));
+      } else {
+        throw new Error('Empty summary body');
+      }
+    } catch (error) {
+      // If the summary doesn't exist, return a default one
+      const defaultSummary = {
+        companyId,
+        companyName: companyId === 'company-123'
+          ? 'Example Tech Inc.'
+          : companyId === 'company-456'
+            ? 'Innovate AI Corp.'
+            : companyId === 'company-789'
+              ? 'Future Finance Ltd.'
+              : `Company ${companyId}`,
+        lastUpdated: new Date().toISOString(),
+        overallSentiment: {
+          score: 0.5,
+          trend: 0,
+          confidence: 0.5
+        },
+        topicSentiments: [],
+        recentInsights: [
+          "No sentiment data available yet",
+          "Submit articles to generate insights"
+        ],
+        sources: {},
+        timeDistribution: {
+          last24h: 0,
+          last7d: 0,
+          last30d: 0
+        }
+      };
+      
+      res.json(createSuccessResponse(defaultSummary));
     }
+  } catch (error) {
+    console.error('Error getting company sentiment:', error);
+    res.status(500).json(createErrorResponse(
+      ERROR_CODES.INTERNAL_ERROR,
+      'Error retrieving company sentiment',
+      req.headers['x-request-id'] as string
+    ));
+  }
+});
+
+// Get company sentiment history
+app.get('/api/companies/:companyId/sentiment/history', (req, res) => {
+  const { companyId } = req.params;
+  const period = (req.query.period as string) || 'daily';
+  const from = (req.query.from as string) || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const to = (req.query.to as string) || new Date().toISOString();
+  
+  // For demo purposes, generate mock data
+  const data = [];
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+  const dayDiff = Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+  
+  for (let i = 0; i < dayDiff; i++) {
+    const date = new Date(fromDate.getTime() + i * 24 * 60 * 60 * 1000);
+    data.push({
+      date: date.toISOString().split('T')[0],
+      sentiment: 0.4 + Math.random() * 0.4, // Random between 0.4 and 0.8
+      volume: Math.floor(Math.random() * 10) + 1 // Random between 1 and 10
+    });
+  }
+  
+  res.json(createSuccessResponse({
+    companyId,
+    period,
+    data
+  }));
+});
+
+// Get company articles
+app.get('/api/companies/:companyId/articles', async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+    
+    // List analysis files for the company
+    const listResponse = await s3.listObjectsV2({
+      Bucket: BUCKET_NAME,
+      Prefix: `analysis/${companyId}/`
+    }).promise();
+    
+    if (!listResponse.Contents || listResponse.Contents.length === 0) {
+      return res.json(createSuccessResponse({
+        companyId,
+        total: 0,
+        articles: []
+      }));
+    }
+    
+    // Sort by last modified (newest first)
+    const sortedKeys = listResponse.Contents
+      .filter(item => item.Key)
+      .sort((a, b) => {
+        if (!a.LastModified || !b.LastModified) return 0;
+        return b.LastModified.getTime() - a.LastModified.getTime();
+      })
+      .map(item => item.Key as string);
+    
+    // Apply pagination
+    const paginatedKeys = sortedKeys.slice(offset, offset + limit);
+    
+    // Get the content of each analysis file
+    const articles = [];
+    
+    for (const key of paginatedKeys) {
+      try {
+        const response = await s3.getObject({
+          Bucket: BUCKET_NAME,
+          Key: key
+        }).promise();
+        
+        if (response.Body) {
+          const analysis = JSON.parse(response.Body.toString());
+          
+          // Get the original article
+          const articleResponse = await s3.getObject({
+            Bucket: BUCKET_NAME,
+            Key: analysis.originalArticle.reference
+          }).promise().catch(() => null);
+          
+          let title = 'Unknown Title';
+          let source = 'unknown';
+          let publicationDate = null;
+          let url = null;
+          
+          if (articleResponse && articleResponse.Body) {
+            const article = JSON.parse(articleResponse.Body.toString());
+            title = article.title;
+            source = article.source;
+            publicationDate = article.publicationDate;
+            url = article.url;
+          }
+          
+          articles.push({
+            id: analysis.articleId,
+            title,
+            source,
+            publicationDate: publicationDate || analysis.metadata.processedAt,
+            sentiment: analysis.analysis.overallSentiment,
+            url,
+            keyInsights: analysis.analysis.keyInsights
+          });
+        }
+      } catch (error) {
+        console.error(`Error getting analysis from ${key}:`, error);
+      }
+    }
+    
+    return res.json(createSuccessResponse({
+      companyId,
+      total: sortedKeys.length,
+      articles
+    }));
+  } catch (error) {
+    console.error('Error getting company articles:', error);
+    return res.status(500).json(createErrorResponse(
+      ERROR_CODES.INTERNAL_ERROR,
+      'Error retrieving company articles',
+      req.headers['x-request-id'] as string
+    ));
+  }
+});
+
+// Submit article
+app.post('/api/articles', async (req, res) => {
+  try {
+    const articleData: ArticleData = req.body;
+    
+    // Validate required fields
+    if (!articleData.companyId || !articleData.title || !articleData.content || !articleData.source) {
+      return res.status(400).json(createErrorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        'Missing required fields: companyId, title, content, source',
+        req.headers['x-request-id'] as string
+      ));
+    }
+    
+    // Add submission timestamp if not provided
+    if (!articleData.submittedAt) {
+      articleData.submittedAt = new Date().toISOString();
+    }
+    
+    // Generate S3 key
+    const timestamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] || '';
+    const uuid = generateId();
+    // Ensure companyId is a string
+    const companyId = String(articleData.companyId);
+    const key = formatArticleKey(companyId, timestamp, uuid);
+    
+    // Upload to S3
+    await s3.putObject({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      Body: JSON.stringify(articleData),
+      ContentType: 'application/json',
+      Metadata: {
+        companyId: articleData.companyId,
+        source: articleData.source,
+        submittedAt: articleData.submittedAt,
+        tags: articleData.tags ? articleData.tags.join(',') : ''
+      }
+    }).promise();
+    
+    // Return success response
+    return res.status(201).json(createSuccessResponse({
+      status: 'success',
+      message: 'Article submitted successfully',
+      articleId: `${timestamp}-${uuid}`,
+      estimatedProcessingTime: '45 seconds'
+    }));
+  } catch (error) {
+    console.error('Error submitting article:', error);
+    return res.status(500).json(createErrorResponse(
+      ERROR_CODES.INTERNAL_ERROR,
+      'Error submitting article',
+      req.headers['x-request-id'] as string
+    ));
+  }
+});
+
+// Refresh company sentiment
+app.post('/api/companies/:companyId/sentiment/refresh', (req, res) => {
+  // Get companyId from params but we're not using it in this demo implementation
+  // const { companyId } = req.params;
+  
+  // In a real implementation, this would trigger a Lambda function to refresh the sentiment
+  // For now, just return a success response
+  return res.json(createSuccessResponse({
+    status: 'success',
+    message: 'Sentiment refresh initiated',
+    estimatedCompletionTime: '30 seconds'
   }));
 });
 

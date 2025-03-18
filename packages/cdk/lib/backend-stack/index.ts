@@ -1,14 +1,14 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
-// Import when needed
-// import * as iam from 'aws-cdk-lib/aws-iam';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
+import * as path from 'path';
 
 export class BackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -26,46 +26,83 @@ export class BackendStack extends cdk.Stack {
           allowedHeaders: ['*'],
         },
       ],
+      lifecycleRules: [
+        {
+          // Add lifecycle rule to expire sentiment analysis files after 30 days
+          id: 'ExpireSentimentFiles',
+          enabled: true,
+          prefix: 'analysis/',
+          expiration: cdk.Duration.days(30),
+        },
+        {
+          // Keep the latest summary files, but expire older versions
+          id: 'ExpireOldSummaries',
+          enabled: true,
+          prefix: 'summaries/',
+          noncurrentVersionExpiration: cdk.Duration.days(1),
+        }
+      ],
     });
 
     // Create a Lambda function for the API
-    const apiLambda = new lambda.Function(this, 'ApiLambda', {
+    const apiLambda = new nodejs.NodejsFunction(this, 'ApiLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('../backend/dist'),
+      entry: path.join(__dirname, '../../../backend/src/lambda.ts'),
+      handler: 'apiHandler',
       environment: {
         ARTICLES_BUCKET: articlesBucket.bucketName,
+        NODE_ENV: 'production',
       },
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        // Don't exclude aws-sdk as it's needed by the Lambda function
+        externalModules: [],
+        nodeModules: ['express', 'serverless-http', 'aws-sdk'],
+      },
     });
 
     // Create a Lambda function for article processing
-    const articleProcessorLambda = new lambda.Function(this, 'ArticleProcessorLambda', {
+    const articleProcessorLambda = new nodejs.NodejsFunction(this, 'ArticleProcessorLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'articleProcessor.handler',
-      code: lambda.Code.fromAsset('../backend/dist'),
+      entry: path.join(__dirname, '../../../backend/src/handlers/articleProcessor.ts'),
+      handler: 'handler',
       environment: {
         ARTICLES_BUCKET: articlesBucket.bucketName,
-        OPENAI_API_KEY: ssm.StringParameter.valueForStringParameter(
-          this,
-          '/hiive-sentiment/openai-api-key'
-        ),
+        OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || 'demo-key',
+        NODE_ENV: 'production',
       },
       timeout: cdk.Duration.minutes(5),
       memorySize: 1024,
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        // Don't exclude aws-sdk as it's needed by the Lambda function
+        externalModules: [],
+        nodeModules: ['aws-sdk'],
+      },
     });
 
     // Create a Lambda function for summary aggregation
-    const summaryAggregatorLambda = new lambda.Function(this, 'SummaryAggregatorLambda', {
+    const summaryAggregatorLambda = new nodejs.NodejsFunction(this, 'SummaryAggregatorLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'summaryAggregator.handler',
-      code: lambda.Code.fromAsset('../backend/dist'),
+      entry: path.join(__dirname, '../../../backend/src/handlers/summaryAggregator.ts'),
+      handler: 'handler',
       environment: {
         ARTICLES_BUCKET: articlesBucket.bucketName,
+        NODE_ENV: 'production',
       },
       timeout: cdk.Duration.minutes(5),
       memorySize: 1024,
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        // Don't exclude aws-sdk as it's needed by the Lambda function
+        externalModules: [],
+        nodeModules: ['aws-sdk'],
+      },
     });
 
     // Grant permissions to the Lambda functions
@@ -100,13 +137,33 @@ export class BackendStack extends cdk.Stack {
     const lambdaIntegration = new apigateway.LambdaIntegration(apiLambda);
 
     // Add routes
-    const companies = api.root.addResource('companies');
+    const apiResource = api.root.addResource('api');
+    
+    // Health check endpoint
+    const health = apiResource.addResource('health');
+    health.addMethod('GET', lambdaIntegration);
+    
+    // Companies endpoints
+    const companies = apiResource.addResource('companies');
     const company = companies.addResource('{companyId}');
     const sentiment = company.addResource('sentiment');
     sentiment.addMethod('GET', lambdaIntegration);
-
-    const articles = api.root.addResource('articles');
+    
+    // Sentiment history endpoint
+    const history = sentiment.addResource('history');
+    history.addMethod('GET', lambdaIntegration);
+    
+    // Sentiment refresh endpoint
+    const refresh = sentiment.addResource('refresh');
+    refresh.addMethod('POST', lambdaIntegration);
+    
+    // Articles endpoints
+    const articles = apiResource.addResource('articles');
     articles.addMethod('POST', lambdaIntegration);
+    
+    // Company articles endpoint
+    const companyArticles = company.addResource('articles');
+    companyArticles.addMethod('GET', lambdaIntegration);
 
     // Output the API URL
     new cdk.CfnOutput(this, 'ApiUrl', {

@@ -19,18 +19,19 @@
 
 ### AI & Data Processing
 - **LangChain.js**: Framework for developing applications powered by language models
-- **OpenAI API**: Access to GPT models for natural language processing
+- **OpenRouter API**: Flexible access to various LLM models
 - **Cheerio**: Server-side HTML parsing for web scraping
 - **node-cache**: In-memory caching for API responses
 ### Infrastructure & Deployment
 - **AWS CDK**: Infrastructure as Code for AWS resources
-- **AWS Lambda**: Serverless compute for backend API
+- **AWS Lambda**: Serverless compute for backend API and article processing
 - **Amazon API Gateway**: API management and routing
 - **Amazon S3**: Static website hosting for frontend and scale-to-zero article storage
 - **Amazon CloudFront**: Content delivery network
-- **AWS Systems Manager Parameter Store**: Secure storage for configuration and secrets
+- **Amazon CloudWatch**: Logging, monitoring, and scheduled events
 - **AWS SDK for JavaScript**: Programmatic access to AWS services from Node.js
-- **AWS Systems Manager Parameter Store**: Secure storage for configuration and secrets
+- **S3 Event Notifications**: Trigger Lambda functions when new articles are uploaded
+- **Lambda Environment Variables**: Secure storage for configuration and API keys
 
 ### Development Tools
 - **Vite**: Fast build tooling for modern web projects
@@ -40,18 +41,19 @@
 - **MSW (Mock Service Worker)**: API mocking for development and testing
 
 ## Development Setup
-
 ### Local Development Environment
 - Node.js 20.x LTS
 - npm or yarn for package management
 - Git for version control
-- AWS CLI configured with appropriate credentials
+- AWS CLI configured with appropriate credentials and profiles
 - AWS CDK CLI installed globally
 - VSCode with recommended extensions:
   - ESLint
   - Prettier
   - Tailwind CSS IntelliSense
   - TypeScript Vue Plugin
+  - AWS Toolkit
+  - Thunder Client (for API testing)
   - AWS Toolkit
 
 ### Project Structure
@@ -158,11 +160,13 @@ hiive-sentiment-analyzer/
 ## Dependencies
 
 ### External APIs
-- **OpenAI API**: For LLM-based text processing and analysis
+- **OpenRouter API**: For flexible access to various LLM models
 - **News APIs**: (e.g., NewsAPI, GDELT) for retrieving company news
 - **Social Media APIs**: For retrieving social sentiment (may be mocked)
 - **Financial Data APIs**: For retrieving financial metrics (may be mocked)
 - **AWS S3 API**: For storing and retrieving articles
+- **AWS CloudWatch API**: For logging and monitoring
+- **AWS API Gateway**: For exposing REST API endpoints
 
 ### Third-Party Libraries
 - **LangChain.js**: For building AI agent workflows
@@ -174,6 +178,9 @@ hiive-sentiment-analyzer/
 - **aws-cdk-lib**: For defining AWS infrastructure
 - **aws-sdk**: For interacting with AWS services
 - **commander.js**: For building command-line interfaces
+- **express**: For building REST APIs
+- **serverless-http**: For adapting Express apps to Lambda
+- **aws-lambda**: For Lambda function types and utilities
 
 ### Development Dependencies
 - **TypeScript**: For type checking
@@ -200,12 +207,14 @@ hiive-sentiment-analyzer/
 
 ### AWS CDK Deployment
 - **Infrastructure as Code**: Define all AWS resources using TypeScript
-- **CI/CD Pipeline**: AWS CodePipeline for automated deployments
+- **AWS Profile Configuration**: Use specific AWS profiles for deployment
 - **Frontend Hosting**: S3 + CloudFront for static website hosting
-- **Backend Services**: Lambda functions for API endpoints
+- **Backend Services**: Lambda functions for API endpoints and article processing
 - **API Management**: API Gateway for routing and management
-- **Configuration Management**: Systems Manager Parameter Store for secrets and configuration
+- **Configuration Management**: Environment variables for API keys and configuration
 - **Monitoring**: CloudWatch for logs and metrics
+- **Event-Driven Architecture**: S3 event notifications for triggering Lambda functions
+- **Deployment Scripts**: Shell scripts for building and deploying the application
 
 ### Deployment Considerations
 - **API Rate Limits**: Ensure external API usage stays within free tier limits

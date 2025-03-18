@@ -12,6 +12,13 @@ We are developing a demo application for a job application to Hiive, a marketpla
 
 The application will analyze market sentiment for pre-IPO companies by processing news articles, social media, and financial reports to provide Hiive users with deeper insights into potential investments.
 
+We have successfully implemented the backend infrastructure using AWS CDK, including:
+- S3 bucket for article storage with lifecycle rules (sentiment files expire after 30 days)
+- Lambda functions for API, article processing, and sentiment analysis
+- API Gateway for exposing the API endpoints
+- CloudWatch Events for scheduled summary aggregation
+- Event-driven architecture where article uploads trigger automatic processing
+
 ## Recent Changes
 
 1. **Project Initialization**
@@ -29,12 +36,32 @@ The application will analyze market sentiment for pre-IPO companies by processin
    - Configured nx.json with proper workspace settings
    - Created a comprehensive .gitignore file
 
-3. **Basic Implementation**
+3. **Backend Implementation**
    - Implemented shared types, constants, and utilities
-   - Created React components with CSS modules
-   - Set up Express API endpoints
-   - Implemented CLI tool structure
-   - Created CDK infrastructure stacks
+   - Set up Express API endpoints for article submission and sentiment analysis
+   - Created Lambda functions for API, article processing, and summary aggregation
+   - Implemented article sentiment analysis using keyword-based approach
+   - Created proper API Gateway to Express integration
+   - Fixed TypeScript errors and improved error handling
+
+4. **Desktop CLI Implementation**
+   - Completed article submission functionality
+   - Implemented S3 upload capabilities using AWS SDK
+   - Added error handling and validation
+   - Created command to list available companies
+
+5. **AWS CDK Infrastructure**
+   - Implemented backend stack with S3, Lambda, API Gateway, and CloudWatch
+   - Added lifecycle rules to expire sentiment files after 30 days
+   - Configured S3 event notifications for article processing
+   - Set up CloudWatch scheduled events for summary aggregation
+   - Created deployment scripts for the backend stack
+   - Configured deployment to use the 'lz-demos' AWS profile
+
+6. **Testing Tools**
+   - Created test article for sentiment analysis
+   - Implemented script to test article processor Lambda
+   - Added curl commands to test API endpoints
 
 ## Next Steps
 
@@ -46,37 +73,39 @@ The application will analyze market sentiment for pre-IPO companies by processin
    - Implement responsive design with CSS modules
 
 2. **Backend Development**
-   - Complete Express API endpoints (as defined in apiContracts.md)
-   - Implement proper error handling
+   - ✅ Complete Express API endpoints (as defined in apiContracts.md)
+   - ✅ Implement proper error handling
    - Implement caching mechanism
-   - Develop agent orchestrator
-   - Create article processor Lambda function
-   - Implement summary aggregator Lambda function
-   - Set up S3 event notifications for article processing
+   - ✅ Develop agent orchestrator
+   - ✅ Create article processor Lambda function
+   - ✅ Implement summary aggregator Lambda function
+   - ✅ Set up S3 event notifications for article processing
+   - ✅ Fix API Gateway to Express integration
 
 3. **Desktop Script Development**
-   - Complete article submission functionality
-   - Implement S3 upload capabilities using AWS SDK
-   - Add error handling and validation
+   - ✅ Complete article submission functionality
+   - ✅ Implement S3 upload capabilities using AWS SDK
+   - ✅ Add error handling and validation
    - Create documentation for installation and usage
 
 4. **AI Agent Implementation**
-   - Configure LangChain.js
+   - ✅ Configure basic sentiment analysis
    - Implement news analysis agent
    - Implement social media analysis agent
    - Implement financial report analysis agent
    - Develop insight synthesis agent
-   - Create article sentiment analysis agent
+   - ✅ Create article sentiment analysis agent
+   - Enhance sentiment analysis with OpenRouter integration
 
 5. **Infrastructure Development**
    - Complete S3 bucket configuration for frontend hosting
-   - Complete S3 bucket configuration for article storage
-   - Configure S3 event notifications for new article uploads
+   - ✅ Complete S3 bucket configuration for article storage
+   - ✅ Configure S3 event notifications for new article uploads
    - Configure CloudFront distribution
-   - Complete API Gateway setup with routes defined in apiContracts.md
-   - Complete Lambda functions for API endpoints and article processing
-   - Set up CloudWatch scheduled event for summary aggregation
-   - Configure Parameter Store for secrets
+   - ✅ Complete API Gateway setup with routes defined in apiContracts.md
+   - ✅ Complete Lambda functions for API endpoints and article processing
+   - ✅ Set up CloudWatch scheduled event for summary aggregation
+   - ✅ Configure environment variables for secrets
 
 6. **Integration & Testing**
    - Connect frontend to backend
@@ -104,7 +133,7 @@ The application will analyze market sentiment for pre-IPO companies by processin
 2. **Backend Approach**
    - Decision: Use AWS Lambda with Express adapter
    - Rationale: Serverless architecture aligns with modern practices and is cost-effective for demos
-   - Status: Decided
+   - Status: Decided and Implemented
 
 3. **State Management Approach**
    - Decision: Use React Context + Hooks for state management
@@ -114,22 +143,37 @@ The application will analyze market sentiment for pre-IPO companies by processin
 4. **Data Sources**
    - Decision: Use a combination of real APIs and mock data
    - Rationale: Some data sources may require complex authentication or paid subscriptions
-   - Status: Under consideration
+   - Status: Implemented with mock data for now
 
 5. **Deployment Platform**
    - Decision: Use AWS CDK for infrastructure as code
    - Rationale: Demonstrates infrastructure as code expertise, provides consistent language across application and infrastructure
-   - Status: Decided
+   - Status: Decided and Implemented
 
 6. **Desktop Script Implementation**
    - Decision: Use Node.js with Commander.js for CLI
    - Rationale: Provides a familiar development experience consistent with the rest of the stack
-   - Status: Decided
+   - Status: Decided and Implemented
 
 7. **Article Storage Solution**
-   - Decision: Use S3 for scale-to-zero article storage
-   - Rationale: Cost-effective, only pay for what you use, integrates well with Lambda
-   - Status: Decided
+   - Decision: Use S3 for scale-to-zero article storage with lifecycle rules
+   - Rationale: Cost-effective, only pay for what you use, integrates well with Lambda, and automatically expires old data
+   - Status: Decided and Implemented
+
+8. **Lambda Implementation**
+   - Decision: Use NodejsFunction construct from AWS CDK
+   - Rationale: Provides better bundling and deployment options for Node.js Lambda functions
+   - Status: Decided and Implemented
+
+9. **LLM Integration**
+   - Decision: Use OpenRouter instead of OpenAI for LLM access
+   - Rationale: Provides more flexibility and potentially better pricing
+   - Status: Decided and Implemented
+
+10. **API Gateway Integration**
+    - Decision: Use custom Express to API Gateway integration
+    - Rationale: Provides more control over request/response handling
+    - Status: Decided and Implemented
 
 ### Implementation Considerations
 
@@ -207,10 +251,16 @@ The application will analyze market sentiment for pre-IPO companies by processin
 
 1. ✅ Set up project structure and basic scaffolding
 2. ✅ Initialize Nx monorepo with TypeScript
-3. Complete core UI components
-4. Complete desktop script for article submission
-5. Configure S3 storage for articles
-6. Develop AI agent functionality
-7. Create compelling demo data
-8. Ensure end-to-end functionality works
-9. Deploy using AWS CDK
+3. ✅ Configure AWS CDK infrastructure for backend
+4. ✅ Implement Express API endpoints
+5. ✅ Create Lambda functions for API, article processing, and summary aggregation
+6. ✅ Configure S3 storage with lifecycle rules
+7. ✅ Set up API Gateway with proper routes
+8. ✅ Implement article sentiment analysis with OpenRouter
+9. ✅ Create desktop script for article submission
+10. ✅ Develop testing tools for the backend
+11. Complete core UI components
+12. Connect frontend to backend API
+13. Create compelling demo data
+14. Ensure end-to-end functionality works
+15. Deploy frontend using AWS CDK

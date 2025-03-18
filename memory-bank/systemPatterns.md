@@ -118,10 +118,11 @@ flowchart TD
    - Provides consistent design system
    - Aligns with modern frontend practices
 
-5. **AI Integration**: LangChain.js
+5. **AI Integration**: OpenRouter with LangChain.js
    - Provides tools for building AI agent workflows
    - Simplifies integration with LLM APIs
    - Enables complex agent interactions
+   - OpenRouter offers more flexibility than direct OpenAI integration
 
 6. **Data Visualization**: Recharts
    - React-native charting library
@@ -163,13 +164,14 @@ flowchart TD
    - Separate data management from rendering
    - Improve component reusability
    - Simplify testing
-
 ### Backend Patterns
 
 1. **Serverless Architecture**
    - Implement backend logic in Lambda functions
    - Scale automatically based on demand
    - Reduce operational complexity
+   - Use NodejsFunction construct for better bundling
+   - Include aws-sdk as a nodeModule instead of an externalModule to avoid runtime errors
 
 2. **Agent-Based Architecture**
    - Delegate specific tasks to specialized AI agents
@@ -189,6 +191,14 @@ flowchart TD
 5. **Event-Driven Processing**
    - Process articles asynchronously as they arrive in S3
    - Decouple submission from processing
+   - Enable scalable, resilient workflow
+   - Use S3 event notifications to trigger Lambda functions
+
+6. **Express to API Gateway Integration**
+   - Custom integration between Express and API Gateway
+   - Translate API Gateway events to Express requests
+   - Maintain familiar Express routing patterns
+   - Enable reuse of Express middleware and error handling
    - Enable scalable, resilient workflow
 
 ### AI Agent Patterns
@@ -214,6 +224,7 @@ flowchart TD
    - Define all infrastructure components in TypeScript using AWS CDK
    - Enable version control of infrastructure
    - Facilitate reproducible deployments
+   - Use AWS CDK constructs for better abstraction
 
 2. **Immutable Infrastructure**
    - Create new resources rather than modifying existing ones
@@ -224,11 +235,24 @@ flowchart TD
    - Grant minimal permissions required for each component
    - Improve security posture
    - Follow AWS security best practices
+   - Use IAM roles for Lambda functions
 
 4. **Configuration Externalization**
-   - Store configuration in Parameter Store
+   - Store API keys and secrets in environment variables
    - Separate configuration from code
    - Enable environment-specific settings
+   - Pass configuration to Lambda functions via environment variables
+
+5. **Lifecycle Management**
+   - Implement S3 lifecycle rules for cost optimization
+   - Automatically expire sentiment analysis files after 30 days
+   - Maintain only the latest summary files
+   - Reduce storage costs and management overhead
+
+6. **AWS Profile Configuration**
+   - Use specific AWS profiles for deployment
+   - Ensure consistent deployment environment
+   - Simplify deployment process with scripts
 
 ## Component Relationships
 

@@ -15,19 +15,21 @@
 - **Express 4.x**: Minimal web framework for Node.js
 - **TypeScript 5.x**: Type safety for backend code
 - **Zod**: TypeScript-first schema validation
+- **Commander.js**: Complete solution for Node.js command-line interfaces
 
 ### AI & Data Processing
 - **LangChain.js**: Framework for developing applications powered by language models
 - **OpenAI API**: Access to GPT models for natural language processing
 - **Cheerio**: Server-side HTML parsing for web scraping
 - **node-cache**: In-memory caching for API responses
-
 ### Infrastructure & Deployment
 - **AWS CDK**: Infrastructure as Code for AWS resources
 - **AWS Lambda**: Serverless compute for backend API
 - **Amazon API Gateway**: API management and routing
-- **Amazon S3**: Static website hosting for frontend
+- **Amazon S3**: Static website hosting for frontend and scale-to-zero article storage
 - **Amazon CloudFront**: Content delivery network
+- **AWS Systems Manager Parameter Store**: Secure storage for configuration and secrets
+- **AWS SDK for JavaScript**: Programmatic access to AWS services from Node.js
 - **AWS Systems Manager Parameter Store**: Secure storage for configuration and secrets
 
 ### Development Tools
@@ -98,6 +100,14 @@ hiive-sentiment-analyzer/
 │   │   ├── middleware/
 │   │   └── utils/
 │   └── tests/
+├── desktop/
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── src/
+│   │   ├── commands/
+│   │   ├── services/
+│   │   └── utils/
+│   └── tests/
 └── shared/
     ├── package.json
     ├── tsconfig.json
@@ -152,6 +162,7 @@ hiive-sentiment-analyzer/
 - **News APIs**: (e.g., NewsAPI, GDELT) for retrieving company news
 - **Social Media APIs**: For retrieving social sentiment (may be mocked)
 - **Financial Data APIs**: For retrieving financial metrics (may be mocked)
+- **AWS S3 API**: For storing and retrieving articles
 
 ### Third-Party Libraries
 - **LangChain.js**: For building AI agent workflows
@@ -161,6 +172,8 @@ hiive-sentiment-analyzer/
 - **date-fns**: For date manipulation
 - **zod**: For schema validation
 - **aws-cdk-lib**: For defining AWS infrastructure
+- **aws-sdk**: For interacting with AWS services
+- **commander.js**: For building command-line interfaces
 
 ### Development Dependencies
 - **TypeScript**: For type checking

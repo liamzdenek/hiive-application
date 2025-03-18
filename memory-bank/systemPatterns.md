@@ -12,6 +12,10 @@ flowchart TD
         API[API Client]
     end
     
+    subgraph Desktop
+        Script[Desktop Script]
+    end
+    
     subgraph AWS_Cloud
         subgraph CloudFront
             CDN[Content Delivery Network]
@@ -19,6 +23,7 @@ flowchart TD
         
         subgraph S3
             StaticAssets[Static Assets]
+            ArticleStorage[Article Storage]
         end
         
         subgraph API_Gateway
@@ -31,6 +36,7 @@ flowchart TD
             SocialHandler[Social Media Handler]
             FinanceHandler[Financial Reports Handler]
             SynthesisHandler[Insight Synthesis Handler]
+            ArticleProcessor[Article Processor]
         end
         
         subgraph Parameter_Store
@@ -54,15 +60,23 @@ flowchart TD
     API <--> CloudFront
     CloudFront <--> StaticAssets
     CloudFront <--> APIRoutes
+    
+    Script --> ArticleStorage
+    ArticleStorage --> ArticleProcessor
+    
     APIRoutes <--> AgentOrchestrator
     AgentOrchestrator <--> NewsHandler
     AgentOrchestrator <--> SocialHandler
     AgentOrchestrator <--> FinanceHandler
     AgentOrchestrator <--> SynthesisHandler
+    AgentOrchestrator <--> ArticleProcessor
+    
     NewsHandler <--> LLMAPI
     SocialHandler <--> LLMAPI
     FinanceHandler <--> LLMAPI
     SynthesisHandler <--> LLMAPI
+    ArticleProcessor <--> LLMAPI
+    
     NewsHandler <--> NewsAPI
     SocialHandler <--> SocialAPI
     Lambda <--> Secrets
@@ -110,6 +124,17 @@ flowchart TD
    - Enables infrastructure testing and validation
    - Provides repeatable deployments
 
+8. **Desktop Script**: Node.js CLI Application
+   - Enables article submission from desktop environment
+   - Provides simple interface for users to submit articles
+   - Integrates with S3 for storage
+
+9. **Storage Solution**: Amazon S3
+   - Cost-effective, scale-to-zero storage for articles
+   - Pay only for what you use with no minimum fees
+   - Integrates seamlessly with Lambda for processing
+   - Supports lifecycle policies for automatic cleanup
+
 ## Design Patterns in Use
 
 ### Frontend Patterns
@@ -150,6 +175,11 @@ flowchart TD
    - Cache expensive AI operations
    - Improve response times for repeated queries
    - Reduce API costs
+
+5. **Event-Driven Processing**
+   - Process articles asynchronously as they arrive in S3
+   - Decouple submission from processing
+   - Enable scalable, resilient workflow
 
 ### AI Agent Patterns
 
@@ -198,6 +228,8 @@ flowchart TD
 sequenceDiagram
     participant User
     participant UI as UI Components
+    participant Desktop as Desktop Script
+    participant S3 as S3 Storage
     participant API as API Client
     participant CloudFront as CloudFront
     participant APIGateway as API Gateway
@@ -205,23 +237,36 @@ sequenceDiagram
     participant Agents as AI Agents
     participant LLM as LLM API
     
-    User->>UI: Select company
-    UI->>API: Request sentiment analysis
-    API->>CloudFront: Send API request
-    CloudFront->>APIGateway: Route to API Gateway
-    APIGateway->>Lambda: Invoke Lambda function
-    
-    alt Cache Hit
-        Lambda->>UI: Return cached results
-    else Cache Miss
-        Lambda->>Agents: Dispatch tasks
-        Agents->>LLM: Process with LLM
-        LLM->>Agents: Return analysis
-        Agents->>Lambda: Return results
-        Lambda->>UI: Return analysis results
+    alt Web UI Flow
+        User->>UI: Select company
+        UI->>API: Request sentiment analysis
+        API->>CloudFront: Send API request
+        CloudFront->>APIGateway: Route to API Gateway
+        APIGateway->>Lambda: Invoke Lambda function
+        
+        alt Cache Hit
+            Lambda->>UI: Return cached results
+        else Cache Miss
+            Lambda->>Agents: Dispatch tasks
+            Agents->>LLM: Process with LLM
+            LLM->>Agents: Return analysis
+            Agents->>Lambda: Return results
+            Lambda->>UI: Return analysis results
+        end
+        
+        UI->>User: Display sentiment dashboard
     end
     
-    UI->>User: Display sentiment dashboard
+    alt Desktop Script Flow
+        User->>Desktop: Submit article
+        Desktop->>S3: Upload article
+        S3->>Lambda: Trigger article processor
+        Lambda->>Agents: Process article
+        Agents->>LLM: Analyze with LLM
+        LLM->>Agents: Return sentiment analysis
+        Agents->>Lambda: Return results
+        Lambda->>S3: Store analysis results
+    end
 ```
 
 ### Component Hierarchy
@@ -271,6 +316,7 @@ flowchart TD
     subgraph Backend_Resources
         ApiGateway[API Gateway]
         LambdaFunctions[Lambda Functions]
+        ArticleStorageBucket[S3 Article Storage]
         ParameterStore[Parameter Store]
         LogGroups[CloudWatch Log Groups]
     end

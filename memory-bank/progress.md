@@ -21,6 +21,14 @@ As this is a new project in the planning phase, no components have been implemen
 - [ ] API endpoints for sentiment analysis
 - [ ] Caching mechanism
 - [ ] Error handling middleware
+- [ ] Article processor Lambda function
+
+### Desktop Script
+- [ ] Node.js CLI application structure
+- [ ] Article submission functionality
+- [ ] S3 upload capabilities
+- [ ] Command-line interface
+- [ ] Error handling and validation
 
 ### AI Agent System
 - [ ] Agent orchestrator
@@ -28,10 +36,12 @@ As this is a new project in the planning phase, no components have been implemen
 - [ ] Social media analysis agent
 - [ ] Financial report analysis agent
 - [ ] Insight synthesis agent
+- [ ] Article sentiment analysis agent
 
 ### AWS Infrastructure (CDK)
 - [ ] Frontend stack (S3, CloudFront)
 - [ ] Backend stack (API Gateway, Lambda)
+- [ ] Article storage stack (S3)
 - [ ] Parameter Store configuration
 - [ ] Logging and monitoring setup
 - [ ] CI/CD pipeline (optional)
@@ -80,6 +90,8 @@ No issues have been identified yet as development has not started. This section 
 - [ ] Project repository initialized
 - [ ] AWS CDK project configured
 - [ ] Basic UI components implemented
+- [ ] Desktop script implemented
+- [ ] S3 article storage configured
 - [ ] Lambda functions created
 - [ ] AI agents processing sample data
 - [ ] End-to-end functionality working

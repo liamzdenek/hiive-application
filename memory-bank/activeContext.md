@@ -37,16 +37,26 @@ This is a new project, so there are no recent changes to document. We are curren
    - Create API endpoints
    - Implement caching mechanism
    - Develop agent orchestrator
+   - Create article processor Lambda function
 
-4. **AI Agent Implementation**
+4. **Desktop Script Development**
+   - Create Node.js CLI application
+   - Implement article submission functionality
+   - Configure S3 upload capabilities
+   - Add user-friendly command-line interface
+   - Implement error handling and validation
+
+5. **AI Agent Implementation**
    - Configure LangChain.js
    - Implement news analysis agent
    - Implement social media analysis agent
    - Implement financial report analysis agent
    - Develop insight synthesis agent
+   - Create article sentiment analysis agent
 
-5. **Infrastructure Development**
+6. **Infrastructure Development**
    - Define S3 bucket for frontend hosting
+   - Define S3 bucket for article storage
    - Configure CloudFront distribution
    - Set up API Gateway
    - Define Lambda functions
@@ -95,6 +105,16 @@ This is a new project, so there are no recent changes to document. We are curren
    - Rationale: Demonstrates infrastructure as code expertise, provides consistent language across application and infrastructure
    - Status: Decided
 
+6. **Desktop Script Implementation**
+   - Decision: Use Node.js with Commander.js for CLI
+   - Rationale: Provides a familiar development experience consistent with the rest of the stack
+   - Status: Decided
+
+7. **Article Storage Solution**
+   - Decision: Use S3 for scale-to-zero article storage
+   - Rationale: Cost-effective, only pay for what you use, integrates well with Lambda
+   - Status: Decided
+
 ### Implementation Considerations
 
 1. **Scope Management**
@@ -127,6 +147,16 @@ This is a new project, so there are no recent changes to document. We are curren
    - Approach: Follow AWS best practices, utilize free tier where possible
    - Status: To be implemented
 
+7. **Desktop Script Distribution**
+   - Challenge: Making the desktop script easy to install and use
+   - Approach: Package as an npm module with clear documentation
+   - Status: To be implemented
+
+8. **S3 Storage Management**
+   - Challenge: Efficiently managing article storage and retrieval
+   - Approach: Implement lifecycle policies and organize with clear prefixes
+   - Status: To be implemented
+
 ### Key Risks
 
 1. **Time Constraint**
@@ -149,12 +179,22 @@ This is a new project, so there are no recent changes to document. We are curren
    - Risk: Incurring unexpected AWS costs
    - Mitigation: Utilize free tier services, implement proper cleanup procedures
 
+6. **Desktop Script Usability**
+   - Risk: Desktop script may be difficult for users to install or use
+   - Mitigation: Focus on simple installation process, clear documentation, and robust error handling
+
+7. **S3 Security**
+   - Risk: Improper S3 configuration could expose sensitive data
+   - Mitigation: Implement proper IAM policies, bucket policies, and encryption
+
 ## Current Priorities
 
 1. Set up project structure and basic scaffolding
 2. Initialize AWS CDK project and define basic infrastructure
 3. Implement core UI components
-4. Develop basic AI agent functionality
-5. Create compelling demo data
-6. Ensure end-to-end functionality works
-7. Deploy using AWS CDK
+4. Develop desktop script for article submission
+5. Configure S3 storage for articles
+6. Develop basic AI agent functionality
+7. Create compelling demo data
+8. Ensure end-to-end functionality works
+9. Deploy using AWS CDK
